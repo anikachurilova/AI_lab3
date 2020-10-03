@@ -27,3 +27,8 @@ public class Pacman extends JFrame {
         });
     }
 }
+
+//m = [
+//        [Node(true,[(1,2),(2,2)]), Node(false,[(0,0),(1,2)])],
+//        [2,2]
+//        ]
