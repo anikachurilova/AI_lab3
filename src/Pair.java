@@ -1,19 +1,22 @@
-public class Pair<F, S> extends java.util.AbstractMap.SimpleImmutableEntry<F, S> {
+public class Pair {
+    private Integer f;
+    private Integer s;
 
-    public  Pair( F f, S s ) {
-        super( f, s );
+    public  Pair( Integer f, Integer s ) {
+        this.f = f;
+        this.s = s;
     }
 
-    public F getFirst() {
-        return getKey();
+    public Integer getFirst() {
+        return f;
     }
 
-    public S getSecond() {
-        return getValue();
+    public Integer getSecond() {
+        return s;
     }
 
     public String toString() {
-        return "["+getKey()+","+getValue()+"]";
+        return "["+getFirst()+","+getSecond()+"]";
     }
 
 }
