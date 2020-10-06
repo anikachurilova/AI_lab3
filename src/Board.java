@@ -158,7 +158,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void playGame(Graphics2D g2d) {
+    private void playGame(Graphics2D g2d) throws InterruptedException {
 
         if (dying) {
 
@@ -173,7 +173,7 @@ public class Board extends JPanel implements ActionListener {
             drawPacman(g2d);
           //  checkMaze();
            // System.out.println(DFS(g2d));
-           // movePac(DFS(g2d),g2d);
+            movePac(DFS(),g2d);
 
 
         }
