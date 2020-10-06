@@ -158,7 +158,7 @@ public class Board extends JPanel implements ActionListener,Abstract {
         }
     }
 
-    private void playGame(Graphics2D g2d) {
+    private void playGame(Graphics2D g2d) throws InterruptedException {
 
         if (dying) {
 
@@ -171,7 +171,11 @@ public class Board extends JPanel implements ActionListener,Abstract {
            //
             // System.out.println(DFS());
             drawPacman(g2d);
-            checkMaze();
+          //  checkMaze();
+           // System.out.println(DFS(g2d));
+            movePac(DFS(),g2d);
+
+
         }
     }
 
@@ -252,12 +256,82 @@ public class Board extends JPanel implements ActionListener,Abstract {
     @Override
     public void death() {
         pacsLeft--;
+
         if (pacsLeft == 0) {
             inGame = false;
         }
+
        // continueLevel();
     }
 
+    private LinkedList<Pair> BFS() throws InterruptedException {
+        LinkedList<Pair> queue = new LinkedList<Pair>();
+        List<Pair> visited = new ArrayList<>();
+        LinkedList<Pair> fringe = new LinkedList<Pair>();
+
+        queue.add(new Pair(0,0));
+        fringe.add(new Pair(0,0));
+        visited.add(new Pair(0,0));
+
+        while (queue.size() != 0){
+            Integer x = fringe.get(0).getFirst();
+            Integer y = fringe.get(0).getSecond();
+
+            Node currentNode = allPaths[x][y];
+//
+//            if(currentNode.isPoint()){
+//                return queue;
+//            }
+
+            Pair nb1 = currentNode.getNeighbour1();
+            Pair nb2 = currentNode.getNeighbour2();
+            Pair nb3 = currentNode.getNeighbour3();
+            Pair nb4 = currentNode.getNeighbour4();
+
+            if(!visited.contains(nb1) && nb1 != null && !nb1.equals(new Pair(x,y))){
+                visited.add(nb1);
+                queue.add(nb1);
+                fringe.add(nb1);
+                Node s = allPaths[nb1.getFirst()][nb1.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if( !visited.contains(nb2) && nb2 != null && !nb2.equals(new Pair(x,y))){
+                visited.add(nb2);
+                queue.add(nb2);
+                fringe.add(nb2);
+                Node s = allPaths[nb2.getFirst()][nb2.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb3) && nb3 != null && !nb3.equals(new Pair(x,y))){
+                visited.add(nb3);
+                queue.add(nb3);
+                fringe.add(nb3);
+                Node s = allPaths[nb3.getFirst()][nb3.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb4) && nb4 != null && !nb4.equals(new Pair(x,y))){
+                visited.add(nb4);
+                queue.add(nb4);
+                fringe.add(nb4);
+                Node s = allPaths[nb4.getFirst()][nb4.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            System.out.println("path: "+queue);
+            System.out.println("Visited: "+visited);
+            System.out.println("Fringe: "+fringe);
+            Thread.sleep(1000);
+            fringe.remove(0);
+        }
+        return queue;
+    }
 
     private List<Pair> DFS(){
        List<Pair> visited = new ArrayList<>();
@@ -390,6 +464,13 @@ public class Board extends JPanel implements ActionListener,Abstract {
             drawPacmanUp(g2d);
         } else {
             drawPacmanDown(g2d);
+        }
+    }
+
+    private void movePac(List<Pair> path,Graphics2D g2d) throws InterruptedException {
+        for(int i = 0; i< path.size();i++){
+            g2d.drawImage(pacman2up, pacman_x + 24*path.get(i).getFirst(), pacman_y + 24*path.get(i).getSecond(), this);
+
         }
     }
 
@@ -577,10 +658,14 @@ public class Board extends JPanel implements ActionListener,Abstract {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        doDrawing(g);
+        try {
+            doDrawing(g);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void doDrawing(Graphics g) {
+    private void doDrawing(Graphics g) throws InterruptedException {
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -593,7 +678,7 @@ public class Board extends JPanel implements ActionListener,Abstract {
 
         if (inGame) {
             playGame(g2d);
-            System.out.println(DFS());
+            System.out.println("Result is "+DFS());
         } else {
             showIntroScreen(g2d);
         }
@@ -657,5 +742,24 @@ public class Board extends JPanel implements ActionListener,Abstract {
     public void actionPerformed(ActionEvent e) {
 
         repaint();
+    }
+}
+class MultithreadingDemo extends Thread
+{
+    public void run()
+    {
+        try
+        {
+            // Displaying the thread that is running
+            System.out.println ("Thread " +
+                    Thread.currentThread().getId() +
+                    " is running");
+
+        }
+        catch (Exception e)
+        {
+            // Throwing an exception
+            System.out.println ("Exception is caught");
+        }
     }
 }
