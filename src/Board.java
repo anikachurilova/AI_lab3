@@ -33,6 +33,10 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
+    private List<Pair> pathGl ;
+    private Integer step = 0;
+
+
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 15;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
@@ -167,13 +171,13 @@ public class Board extends JPanel implements ActionListener {
         } else {
 
 
-            movePacman();
+          //  movePacman();
            //
             // System.out.println(DFS());
             drawPacman(g2d);
           //  checkMaze();
            // System.out.println(DFS(g2d));
-            movePac(DFS(),g2d);
+      //      movePac(DFS(),g2d);
 
 
         }
@@ -450,11 +454,17 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void movePac(List<Pair> path,Graphics2D g2d) throws InterruptedException {
-        for(int i = 0; i< path.size();i++){
-            g2d.drawImage(pacman2up, pacman_x + 24*path.get(i).getFirst(), pacman_y + 24*path.get(i).getSecond(), this);
+    private void movePac(List<Pair> path) throws InterruptedException {
 
-        }
+       // for(int i = 0; i< path.size();i++){
+          //  g2d.drawImage(pacman2up, pacman_x + 24*path.get(step).getFirst(), pacman_y + 24*path.get(step).getSecond(), this);
+        //    Thread.sleep(100);
+        //    repaint();
+       // }
+
+        pacman_x = 24*path.get(step).getFirst();
+        pacman_y = 24*path.get(step).getSecond();
+        step++;
     }
 
     private void drawPacmanUp(Graphics2D g2d) {
@@ -660,8 +670,12 @@ public class Board extends JPanel implements ActionListener {
         doAnim();
 
         if (inGame) {
-            playGame(g2d);
-            System.out.println("Result is "+DFS());
+            pathGl=DFS();
+
+            drawPacman(g2d);
+            //  checkMaze();
+            // System.out.println(DFS(g2d));
+           // System.out.println("Result is "+DFS());
         } else {
             showIntroScreen(g2d);
         }
@@ -683,8 +697,11 @@ public class Board extends JPanel implements ActionListener {
                     req_dx = -1;
                     req_dy = 0;
                 } else if (key == KeyEvent.VK_RIGHT) {
-                    req_dx = 1;
-                    req_dy = 0;
+                    try {
+                        movePac(pathGl);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
                 } else if (key == KeyEvent.VK_UP) {
                     req_dx = 0;
                     req_dy = -1;
