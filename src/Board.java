@@ -14,9 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 import javax.swing.ImageIcon;
@@ -160,7 +158,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void playGame(Graphics2D g2d) throws InterruptedException {
+    private void playGame(Graphics2D g2d) {
 
         if (dying) {
 
@@ -169,8 +167,9 @@ public class Board extends JPanel implements ActionListener {
         } else {
 
 
-       //     movePacman();
+            movePacman();
            //
+            // System.out.println(DFS());
             drawPacman(g2d);
           //  checkMaze();
            // System.out.println(DFS(g2d));
@@ -249,7 +248,76 @@ public class Board extends JPanel implements ActionListener {
        // continueLevel();
     }
 
-    private List<Pair> DFS(Graphics2D g2d) throws InterruptedException {
+    private LinkedList<Pair> BFS() throws InterruptedException {
+        LinkedList<Pair> queue = new LinkedList<Pair>();
+        List<Pair> visited = new ArrayList<>();
+        LinkedList<Pair> fringe = new LinkedList<Pair>();
+
+        queue.add(new Pair(0,0));
+        fringe.add(new Pair(0,0));
+        visited.add(new Pair(0,0));
+
+        while (queue.size() != 0){
+            Integer x = fringe.get(0).getFirst();
+            Integer y = fringe.get(0).getSecond();
+
+            Node currentNode = allPaths[x][y];
+//
+//            if(currentNode.isPoint()){
+//                return queue;
+//            }
+
+            Pair nb1 = currentNode.getNeighbour1();
+            Pair nb2 = currentNode.getNeighbour2();
+            Pair nb3 = currentNode.getNeighbour3();
+            Pair nb4 = currentNode.getNeighbour4();
+
+            if(!visited.contains(nb1) && nb1 != null && !nb1.equals(new Pair(x,y))){
+                visited.add(nb1);
+                queue.add(nb1);
+                fringe.add(nb1);
+                Node s = allPaths[nb1.getFirst()][nb1.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if( !visited.contains(nb2) && nb2 != null && !nb2.equals(new Pair(x,y))){
+                visited.add(nb2);
+                queue.add(nb2);
+                fringe.add(nb2);
+                Node s = allPaths[nb2.getFirst()][nb2.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb3) && nb3 != null && !nb3.equals(new Pair(x,y))){
+                visited.add(nb3);
+                queue.add(nb3);
+                fringe.add(nb3);
+                Node s = allPaths[nb3.getFirst()][nb3.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb4) && nb4 != null && !nb4.equals(new Pair(x,y))){
+                visited.add(nb4);
+                queue.add(nb4);
+                fringe.add(nb4);
+                Node s = allPaths[nb4.getFirst()][nb4.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            System.out.println("path: "+queue);
+            System.out.println("Visited: "+visited);
+            System.out.println("Fringe: "+fringe);
+            Thread.sleep(1000);
+            fringe.remove(0);
+        }
+        return queue;
+    }
+
+    private List<Pair> DFS(){
        List<Pair> visited = new ArrayList<>();
        List<Pair> path = new ArrayList<>();
        List<Pair> fringe = new ArrayList<>();
@@ -258,15 +326,14 @@ public class Board extends JPanel implements ActionListener {
        while (!fringe.isEmpty()){
            Integer x = fringe.get(fringe.size()-1).getFirst();
            Integer y = fringe.get(fringe.size()-1).getSecond();
+           //move pacman step to current node
            Node currentNode = allPaths[x][y];
-         //  movePac(new Pair(x,y), g2d);
 
            path.add(new Pair(x,y));
            System.out.println("path: "+path);
            visited.add(new Pair(x,y));
            System.out.println("Visited: "+visited);
            System.out.println("Fringe: "+fringe);
-           Thread.sleep(100);
 
 
            if(currentNode.isPoint()){
@@ -577,7 +644,7 @@ public class Board extends JPanel implements ActionListener {
         try {
             doDrawing(g);
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -594,10 +661,7 @@ public class Board extends JPanel implements ActionListener {
 
         if (inGame) {
             playGame(g2d);
-          //  drawPacman(g2d);
-       //     int n = 2; // Number of threads
-             //   System.out.println(DFS(g2d));
-               // movePac(DFS(g2d),g2d);
+            System.out.println("Result is "+DFS());
         } else {
             showIntroScreen(g2d);
         }
