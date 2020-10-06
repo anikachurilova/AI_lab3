@@ -21,7 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Board extends JPanel implements ActionListener,Abstract {
+public class Board extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
@@ -33,8 +33,13 @@ public class Board extends JPanel implements ActionListener,Abstract {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private List<Pair> pathGl ;
-    private Integer step = 0;
+    private List<Pair> pathGlDFS ;
+    private List<Pair> pathGlBFS ;
+    private List<Pair> allPathsList = new ArrayList<>();
+    private Integer step_DFS = 0;
+    private Integer step_BFS = 0;
+    boolean firstTimeDFS = true;
+    boolean firstTimeBFS = true;
 
 
     private final int BLOCK_SIZE = 24;
@@ -58,7 +63,7 @@ public class Board extends JPanel implements ActionListener,Abstract {
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
 
-    private int pacman_x, pacman_y, pacmand_x, pacmand_y;
+    private int pacman_x, pacman_y, pacmand_x, pacmand_y,pacman_x_DFS, pacman_y_DFS, pacman_x_BFS, pacman_y_BFS;
     private int req_dx, req_dy, view_dx, view_dy;
 
     private final short levelData[] = {
@@ -81,21 +86,21 @@ public class Board extends JPanel implements ActionListener,Abstract {
 
 
     private final Node [][] allPaths ={
-            {new Node(false,new Pair(0,1),new Pair(1,0)), new Node(false, new Pair(0,0),new Pair(0,2)),new Node(false, new Pair(0,1),new Pair(0,3)),new Node(false, new Pair(0,2),new Pair(0,4)), new Node(false, new Pair(0,3),new Pair(0,5), new Pair(1,4)), new Node(false, new Pair(0,4),new Pair(0,6), new Pair(1,5)), new Node(false, new Pair(0,5),new Pair(0,7), new Pair(1,6)), new Node(false, new Pair(0,6),new Pair(0,8), new Pair(1,7)), new Node(false, new Pair(0,7),new Pair(0,9), new Pair(1,8)), new Node(false, new Pair(0,8),new Pair(0,10), new Pair(1,9)), new Node(false, new Pair(0,9),new Pair(0,11), new Pair(1,10)), new Node(false, new Pair(0,10),new Pair(0,12), new Pair(1,11)), new Node(false, new Pair(0,11),new Pair(0,13), new Pair(1,12)),new Node(false, new Pair(0,13),new Pair(0,14), new Pair(1,13)), new Node(false, new Pair(0,13),new Pair(1,14))},
-            {new Node(false,new Pair(0,0),new Pair(2,0)), new Node(),new Node(),new Node(), new Node(false, new Pair(0,4),new Pair(1,5), new Pair(2,4)), new Node(false, new Pair(1,4),new Pair(0,5), new Pair(1,6), new Pair(2,5)), new Node(false, new Pair(1,5),new Pair(0,6), new Pair(1,7), new Pair(2,6)), new Node(false, new Pair(1,6),new Pair(0,7), new Pair(1,8),new Pair(2,7)), new Node(false, new Pair(1,7),new Pair(0,8), new Pair(1,9), new Pair(2,8)), new Node(false, new Pair(1,8),new Pair(0,9), new Pair(1,10), new Pair(2,9)), new Node(false, new Pair(1,9),new Pair(0,10), new Pair(1,11), new Pair(2,10)), new Node(false, new Pair(1,10),new Pair(0,11), new Pair(1,12),new Pair(2,11)), new Node(false, new Pair(1,11),new Pair(0,12), new Pair(1,13),new Pair(2,13)),new Node(false, new Pair(1,12),new Pair(0,13), new Pair(1,14),new Pair(2,13)), new Node(false, new Pair(1,13),new Pair(0,14), new Pair(2,14))},
-            {new Node (false,new Pair(1,0),new Pair(3,0)), new Node(),new Node(), new Node(), new Node(false, new Pair(1,4),new Pair(2,5),new Pair(3,4)), new Node(false, new Pair(2,4), new Pair(1,5),new Pair(2,6),new Pair(3,5)),new Node(false, new Pair(2,5),new Pair(1,6),new Pair(2,7),new Pair(3,6)),new Node(false, new Pair(2,6),new Pair(1,7),new Pair(2,8),new Pair(3,7)), new Node(false, new Pair(2,7), new Pair(1,8), new Pair(2,9), new Pair(3,8)), new Node(false, new Pair(2,8), new Pair(1,9), new Pair(2,10), new Pair(3,9)), new Node(false, new Pair(2,9), new Pair(1,10), new Pair(2,11), new Pair(3,10)), new Node(false, new Pair(2,10), new Pair(1,11), new Pair(2,12), new Pair(3,11)), new Node(false, new Pair(2,11), new Pair(1,12), new Pair(2,13), new Pair(3,12)), new Node(false, new Pair(2,12), new Pair(1,13), new Pair(2,14), new Pair(3,13)), new Node(false, new Pair(2,13), new Pair(1,14), new Pair(3,14))},
-            {new Node (false, new Pair(2,0), new Pair(4,0)), new Node(), new Node(), new Node(), new Node(false, new Pair(2,4), new Pair(3,5), new Pair(4,4)), new Node(false, new Pair(3,4), new Pair(2,5), new Pair(3,6), new Pair(4,5)), new Node(false, new Pair(3,5), new Pair(2,6), new Pair(3,7), new Pair(4,6)), new Node(false, new Pair(3,6), new Pair(2,7), new Pair(3,8)), new Node(false, new Pair(3,7), new Pair(2,8), new Pair(3,9), new Pair(4,8)), new Node(false, new Pair(3,8), new Pair(2,9), new Pair(3,10), new Pair(4,9)), new Node(false, new Pair(3,9), new Pair(2,10), new Pair(3,11), new Pair(4,10)), new Node(false, new Pair(3,10), new Pair(2,11), new Pair(3,12), new Pair(4,11)), new Node(false, new Pair(3,11), new Pair(2,12), new Pair(3,13), new Pair(4,12)), new Node(false, new Pair(3,12), new Pair(2,13), new Pair(3,14), new Pair(4,13)), new Node(false, new Pair(3,13), new Pair(2,14), new Pair(4,14))},
-            {new Node(false, new Pair(3,0), new Pair(4,1), new Pair(5,0)), new Node(false, new Pair(4,0), new Pair(4,2), new Pair(5,1)), new Node(false, new Pair(4,1), new Pair(4,3), new Pair(5,2)), new Node(false, new Pair(4,2), new Pair(4,4), new Pair(5,3)), new Node(false, new Pair(4,3), new Pair(3,4), new Pair(4,5), new Pair(5,4)), new Node(false, new Pair(4,4), new Pair(3,5), new Pair(4,6), new Pair(5,5)), new Node(false, new Pair(4,5), new Pair(3,6), new Pair(5,6)), new Node(), new Node(false, new Pair(3,8), new Pair(4,9), new Pair(5,8)), new Node(false, new Pair(4,8), new Pair(3,9), new Pair(4,10), new Pair(5,9)), new Node(false, new Pair(4,9), new Pair(3,10), new Pair(4,11), new Pair(5,10)), new Node(false, new Pair(4,10), new Pair(3,11), new Pair(4,12), new Pair(5,11)), new Node(false,new Pair(4,11), new Pair(3,12), new Pair(4,13), new Pair(5,12)), new Node( false, new Pair(4,12), new Pair(3,13), new Pair(4,14), new Pair(5,13)), new Node(false, new Pair(4,13),new Pair(3,14), new Pair(5,14))},
-            {new Node(false, new Pair(4,0), new Pair(5,1), new Pair(6,0)), new Node(false, new Pair(5,0),new Pair(4,1),new Pair(5,2), new Pair(6,1)),new Node(false, new Pair(5,1), new Pair(4,2), new Pair(5,3), new Pair(6,2)), new Node(false, new Pair(5,2), new Pair(4,3), new Pair(5,4), new Pair(6,3)), new Node(false, new Pair(5,3), new Pair(4,4), new Pair(5,5), new Pair(6,4)), new Node(false, new Pair(5,4), new Pair(4,5), new Pair(5,6), new Pair(6,5)), new Node(false, new Pair(5,5), new Pair(4,6), new Pair(6,6)), new Node(), new Node(false, new Pair(4,8), new Pair(5,9), new Pair(6,8)), new Node(false, new Pair(5,8), new Pair(4,9), new Pair(5,10), new Pair(6,9)), new Node(false, new Pair(5,9), new Pair(4,10), new Pair(5,11), new Pair(6,10)), new Node(false,new Pair(5,10),new Pair(4,11),new Pair(5,12), new Pair(6,11)), new Node(false, new Pair(5,11), new Pair(4,12), new Pair(5,13), new Pair(6,12)), new Node(false, new Pair(5,12), new Pair(4,13), new Pair(5,14)), new Node(false, new Pair(5,13), new Pair(4,14), new Pair(6,14))},
-            {new Node(false,new Pair(5,0), new Pair(6,1)), new Node(false, new Pair(6,0), new Pair(5,1), new Pair(6,2), new Pair(7,1)), new Node(false, new Pair(6,1), new Pair(5,2), new Pair(6,3), new Pair(7,2)), new Node(false, new Pair(6,3), new Pair(5,3), new Pair(6,4), new Pair(7,3)), new Node(false, new Pair(6,3), new Pair(5,4), new Pair(6,5)), new Node(false, new Pair(6,4), new Pair(5,5), new Pair(6,6)), new Node(false, new Pair(6,5), new Pair(5,6)), new Node(), new Node(false, new Pair(5,8), new Pair(6,9)), new Node(false, new Pair(6,8), new Pair(5,9), new Pair(6,10)), new Node(false, new Pair(6,9), new Pair(5,10), new Pair(6,11)), new Node(false, new Pair(6,10), new Pair(5,11), new Pair(6,12), new Pair(7,11)), new Node(false, new Pair(6,11), new Pair(5,12), new Pair(7,12)), new Node(), new Node(false, new Pair(5,14), new Pair(7,14))},
-            {new Node(), new Node(false,new Pair(6,1), new Pair(7,2), new Pair(8,1)), new Node(false, new Pair(7,1), new Pair(6,2), new Pair(7,3), new Pair(8,2)), new Node(false, new Pair(7,2), new Pair(6,3), new Pair(8,3)), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(6,11),new Pair(7,12),new Pair(8,11)), new Node(false, new Pair(7,11), new Pair(6,12), new Pair(8,12)), new Node(), new Node(false, new Pair(6,14), new Pair(8,14))},
-            {new Node(), new Node(false,new Pair(7,1), new Pair(8,2), new Pair(9,1)), new Node(false, new Pair(8,1), new Pair(7,2), new Pair(8,3), new Pair(9,2)), new Node(false, new Pair(8,2), new Pair(7,3), new Pair(8,4), new Pair(9,3)), new Node(false, new Pair(8,3), new Pair(8,5), new Pair(9,4)), new Node(false, new Pair(8,4), new Pair(8,6), new Pair(9,5)), new Node(false, new Pair(8,5),new Pair(9,6)), new Node(), new Node(true, new Pair(8,9), new Pair(9,8)), new Node(false, new Pair(8,8), new Pair(8,10), new Pair(9,9)), new Node(false, new Pair(8,9), new Pair(8,11),new Pair(9,10)), new Node(false,new Pair(8,10), new Pair(7,11),new Pair(8,12), new Pair(9,11)), new Node(false, new Pair(8,11), new Pair(7,12), new Pair(9,12)), new Node(), new Node(false, new Pair(7,14), new Pair(9,14))},
-            {new Node(), new Node(false, new Pair(8,1), new Pair(9,2), new Pair(10,1)), new Node(false, new Pair(9,1), new Pair(8,2), new Pair(9,3), new Pair(10,2)), new Node(false, new Pair(9,2), new Pair(8,3), new Pair(9,4), new Pair(10,3)), new Node(false, new Pair(9,3), new Pair(8,4), new Pair(9,5), new Pair(10,4)), new Node(false,new Pair(9,4), new Pair(8,5), new Pair(9,6), new Pair(10,5)), new Node(false, new Pair(9,5), new Pair(8,6), new Pair(10,6)), new Node(), new Node(false, new Pair(8,8),new Pair(9,9), new Pair(10,8)), new Node(false, new Pair(9,8), new Pair(8,9), new Pair(9,10),new Pair(10,9)), new Node(false, new Pair(9,9), new Pair(8,10), new Pair(9,11), new Pair(10,10)), new Node(false, new Pair(9,10), new Pair(8,11), new Pair(9,12), new Pair(10,11)), new Node(false, new Pair(9,11), new Pair(8,12), new Pair(10,12)), new Node(), new Node(false, new Pair(8,14), new Pair(10,14))},
-            {new Node(), new Node(false, new Pair(9,1), new Pair(10,2), new Pair(11,1)), new Node(false, new Pair(10,1), new Pair(9,2), new Pair(10,3), new Pair(11,2)), new Node(false, new Pair(10,2),new Pair(9,3),new Pair(10,4), new Pair(11,3)), new Node(false, new Pair(10,3), new Pair(9,4), new Pair(10,5), new Pair(11,4)), new Node(false, new Pair(10,4), new Pair(9,5), new Pair(10,6), new Pair(11,5)), new Node(false, new Pair(10,5), new Pair(9,6), new Pair(11,6)), new Node(), new Node(false, new Pair(9,8), new Pair(10,9), new Pair(11,8)), new Node(false, new Pair(10,8), new Pair(9,9), new Pair(10,10), new Pair(11,9)), new Node(false,new Pair(10,9), new Pair(9,10), new Pair(10,11), new Pair(11,10)), new Node(false, new Pair(10,10),new Pair(9,11), new Pair(10,12), new Pair(11,11)), new Node(false, new Pair(10,11), new Pair(9,12), new Pair(11,12)), new Node(), new Node(false, new Pair(9,14), new Pair(11,14))},
-            {new Node(), new Node(false, new Pair(10,1), new Pair(11,2), new Pair(12,1)), new Node(false, new Pair(11,1), new Pair(10,2), new Pair(11,3), new Pair(12,2)), new Node(false, new Pair(11,2), new Pair(10,3),new Pair(11,4),new Pair(12,3)), new Node(false, new Pair(11,3), new Pair(10,4), new Pair(11,5),new Pair(12,4)), new Node(false, new Pair(11,4),new Pair(10,5),new Pair(11,6),new Pair(12,5)), new Node(false,new Pair(11,5),new Pair(10,6),new Pair(11,7),new Pair(12,6)),new Node(false, new Pair(11,6),new Pair(11,8),new Pair(12,7)),new Node(false, new Pair(11,7),new Pair(10,8),new Pair(11,9),new Pair(12,8)),new Node(false,new Pair(11,8),new Pair(10,9),new Pair(11,10),new Pair(12,9)), new Node(false,new Pair(11,9),new Pair(10,10),new Pair(11,11),new Pair(12,10)), new Node(false, new Pair(11,10),new Pair(10,11),new Pair(11,12),new Pair(12,11)), new Node(false,new Pair(11,11),new Pair(10,12),new Pair(12,12)),new Node(), new Node(false, new Pair(10,14), new Pair(12,14))},
-            {new Node(), new Node(false, new Pair(11,1),new Pair(12,2),new Pair(13,1)), new Node(false, new Pair(12,1),new Pair(11,2),new Pair(12,3),new Pair(13,2)), new Node(false, new Pair(12,2), new Pair(11,3),new Pair(12,4),new Pair(13,3)), new Node(false, new Pair(12,3),new Pair(11,4),new Pair(12,5),new Pair(13,4)), new Node(false,new Pair(12,4),new Pair(11,5),new Pair(12,6),new Pair(13,5)), new Node(false, new Pair(12,5), new Pair(11,6), new Pair(12,7), new Pair(13,6)), new Node(false, new Pair(12,6),new Pair(11,7),new Pair(12,8), new Pair(13,7)), new Node(false, new Pair(12,7),new Pair(11,8),new Pair(12,9),new Pair(13,8)), new Node(false, new Pair(12,8), new Pair(11,9), new Pair(12,10), new Pair(13,9)), new Node(false, new Pair(12,9),new Pair(11,10),new Pair(12,11),new Pair(13,10)), new Node(false,new Pair(12,10),new Pair(11,11),new Pair(12,12),new Pair(13,11)), new Node(false,new Pair(12,11),new Pair(12,11),new Pair(13,12)), new Node(), new Node(false, new Pair(11,14),new Pair(13,14))},
-            {new Node(), new Node(false, new Pair(1,12),new Pair(13,2)), new Node(false, new Pair(13,1),new Pair(12,2),new Pair(13,3)), new Node(false, new Pair(13,2),new Pair(12,3),new Pair(13,4)), new Node(false, new Pair(13,3), new Pair(12,4), new Pair(13,5)), new Node(false, new Pair(13,4),new Pair(12,5), new Pair(13,6)), new Node(false, new Pair(13,5), new Pair(12,6), new Pair(13,7)), new Node(false, new Pair(13,6), new Pair(12,7),new Pair(13,8)), new Node(false,new Pair(13,7),new Pair(12,8),new Pair(13,9)),new Node(false, new Pair(13,8),new Pair(12,9),new Pair(13,10)), new Node(false, new Pair(13,9),new Pair(12,10),new Pair(13,11),new Pair(14,10)), new Node(false, new Pair(13,10),new Pair(12,11),new Pair(13,12),new Pair(14,11)), new Node(false, new Pair(13,11),new Pair(12,12),new Pair(13,13),new Pair(14,12)), new Node(false, new Pair(13,12),new Pair(13,14),new Pair(14,13)),new Node(false,new Pair(13,13),new Pair(13,14),new Pair(14,14))},
-            {new Node(), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(13,10),new Pair(14,11)), new Node(false, new Pair(14,10),new Pair(13,11),new Pair(14,12)), new Node(false, new Pair(14,11),new Pair(13,12),new Pair(14,13)), new Node(false, new Pair(14,12),new Pair(13,13),new Pair(14,14)), new Node(false, new Pair(14,13),new Pair(13,14))}
+            {new Node(false,new Pair(1,0),new Pair(0,1)), new Node(false, new Pair(0,0),new Pair(2,0)),new Node(false, new Pair(1,0),new Pair(3,0)),new Node(false, new Pair(2,0),new Pair(4,0)), new Node(false, new Pair(3,0),new Pair(5,0), new Pair(4,1)), new Node(false, new Pair(4,0),new Pair(6,0), new Pair(5,1)), new Node(false, new Pair(5,0),new Pair(7,0), new Pair(6,1)), new Node(false, new Pair(6,0),new Pair(8,0), new Pair(7,1)), new Node(false, new Pair(7,0),new Pair(9,0), new Pair(8,1)), new Node(false, new Pair(8,0),new Pair(10,0), new Pair(9,1)), new Node(false, new Pair(9,0),new Pair(11,0), new Pair(10,1)), new Node(false, new Pair(10,0),new Pair(12,0), new Pair(11,1)), new Node(false, new Pair(11,0),new Pair(13,0), new Pair(12,1)),new Node(false, new Pair(13,0),new Pair(14,0), new Pair(13,1)), new Node(false, new Pair(13,0),new Pair(14,1))},
+            {new Node(false,new Pair(0,0),new Pair(0,2)), new Node(),new Node(),new Node(), new Node(false, new Pair(4,0),new Pair(5,1), new Pair(4,2)), new Node(false, new Pair(4,1),new Pair(5,0), new Pair(6,1), new Pair(5,2)), new Node(false, new Pair(5,1),new Pair(6,0), new Pair(7,1), new Pair(6,2)), new Node(false, new Pair(6,1),new Pair(7,0), new Pair(8,1),new Pair(7,2)), new Node(false, new Pair(7,1),new Pair(8,0), new Pair(9,1), new Pair(8,2)), new Node(false, new Pair(8,1),new Pair(9,0), new Pair(10,1), new Pair(9,2)), new Node(false, new Pair(9,1),new Pair(10,0), new Pair(11,1), new Pair(10,2)), new Node(false, new Pair(10,1),new Pair(11,0), new Pair(12,1),new Pair(11,2)), new Node(false, new Pair(11,1),new Pair(12,0), new Pair(13,1),new Pair(13,2)),new Node(false, new Pair(12,1),new Pair(13,0), new Pair(14,1),new Pair(13,2)), new Node(false, new Pair(13,1),new Pair(14,0), new Pair(14,2))},
+            {new Node (false,new Pair(0,1),new Pair(0,3)), new Node(),new Node(), new Node(), new Node(false, new Pair(4,1),new Pair(5,2),new Pair(4,3)), new Node(false, new Pair(4,2), new Pair(5,1),new Pair(6,2),new Pair(5,3)),new Node(false, new Pair(5,2),new Pair(6,1),new Pair(7,2),new Pair(6,3)),new Node(false, new Pair(6,2),new Pair(7,1),new Pair(8,2),new Pair(7,3)), new Node(false, new Pair(7,2), new Pair(8,1), new Pair(9,2), new Pair(8,3)), new Node(false, new Pair(8,2), new Pair(9,1), new Pair(10,2), new Pair(9,3)), new Node(false, new Pair(9,2), new Pair(10,1), new Pair(11,2), new Pair(10,3)), new Node(false, new Pair(10,2), new Pair(11,1), new Pair(12,2), new Pair(11,3)), new Node(false, new Pair(11,2), new Pair(12,1), new Pair(13,2), new Pair(12,3)), new Node(false, new Pair(12,2), new Pair(13,1), new Pair(14,2), new Pair(13,3)), new Node(false, new Pair(13,2), new Pair(14,1), new Pair(14,3))},
+            {new Node (false, new Pair(0,2), new Pair(0,4)), new Node(), new Node(), new Node(), new Node(false, new Pair(4,2), new Pair(5,3), new Pair(4,4)), new Node(false, new Pair(4,3), new Pair(5,2), new Pair(6,3), new Pair(5,4)), new Node(false, new Pair(5,3), new Pair(6,2), new Pair(7,3), new Pair(6,4)), new Node(false, new Pair(6,3), new Pair(7,2), new Pair(8,3)), new Node(false, new Pair(7,3), new Pair(8,2), new Pair(9,3), new Pair(8,4)), new Node(false, new Pair(8,3), new Pair(9,2), new Pair(10,3), new Pair(9,4)), new Node(false, new Pair(9,3), new Pair(10,2), new Pair(11,3), new Pair(10,4)), new Node(false, new Pair(10,3), new Pair(11,2), new Pair(12,3), new Pair(11,4)), new Node(false, new Pair(11,3), new Pair(12,2), new Pair(13,3), new Pair(12,4)), new Node(false, new Pair(12,3), new Pair(13,2), new Pair(14,3), new Pair(13,4)), new Node(false, new Pair(13,3), new Pair(14,2), new Pair(14,4))},
+            {new Node(false, new Pair(0,3), new Pair(1,4), new Pair(0,5)), new Node(false, new Pair(0,4), new Pair(2,4), new Pair(1,5)), new Node(false, new Pair(1,4), new Pair(3,4), new Pair(2,5)), new Node(false, new Pair(2,4), new Pair(4,4), new Pair(3,5)), new Node(false, new Pair(3,4), new Pair(4,3), new Pair(5,4), new Pair(4,5)), new Node(false, new Pair(4,4), new Pair(5,3), new Pair(6,4), new Pair(5,5)), new Node(false, new Pair(5,4), new Pair(6,3), new Pair(6,5)), new Node(), new Node(false, new Pair(8,3), new Pair(9,4), new Pair(8,5)), new Node(false, new Pair(8,4), new Pair(9,3), new Pair(10,4), new Pair(9,5)), new Node(false, new Pair(9,4), new Pair(10,3), new Pair(11,4), new Pair(10,5)), new Node(false, new Pair(10,4), new Pair(11,3), new Pair(12,4), new Pair(11,5)), new Node(false,new Pair(11,4), new Pair(12,3), new Pair(13,4), new Pair(12,5)), new Node( false, new Pair(12,4), new Pair(13,3), new Pair(14,4), new Pair(13,5)), new Node(false, new Pair(13,4),new Pair(14,3), new Pair(14,5))},
+            {new Node(false, new Pair(0,4), new Pair(1,5), new Pair(0,6)), new Node(false, new Pair(0,5),new Pair(1,4),new Pair(2,5), new Pair(1,6)),new Node(false, new Pair(1,5), new Pair(2,4), new Pair(3,5), new Pair(2,6)), new Node(false, new Pair(2,5), new Pair(3,4), new Pair(4,5), new Pair(3,6)), new Node(false, new Pair(3,5), new Pair(4,4), new Pair(5,5), new Pair(4,6)), new Node(false, new Pair(4,5), new Pair(5,4), new Pair(6,5), new Pair(5,6)), new Node(false, new Pair(5,5), new Pair(6,4), new Pair(6,6)), new Node(), new Node(false, new Pair(8,4), new Pair(9,5), new Pair(8,6)), new Node(false, new Pair(8,5), new Pair(9,4), new Pair(10,5), new Pair(9,6)), new Node(false, new Pair(9,5), new Pair(10,4), new Pair(11,5), new Pair(10,6)), new Node(false,new Pair(10,5),new Pair(11,4),new Pair(12,5), new Pair(11,6)), new Node(false, new Pair(11,5), new Pair(12,4), new Pair(13,5), new Pair(12,6)), new Node(false, new Pair(12,5), new Pair(13,4), new Pair(14,5)), new Node(false, new Pair(13,5), new Pair(14,4), new Pair(14,6))},
+            {new Node(false,new Pair(0,5), new Pair(1,6)), new Node(false, new Pair(0,6), new Pair(1,5), new Pair(2,6), new Pair(1,7)), new Node(false, new Pair(1,6), new Pair(2,5), new Pair(3,6), new Pair(2,7)), new Node(false, new Pair(2,6), new Pair(3,5), new Pair(4,6), new Pair(3,7)), new Node(false, new Pair(3,6), new Pair(4,5), new Pair(5,6)), new Node(false, new Pair(4,6), new Pair(5,5), new Pair(6,6)), new Node(false, new Pair(5,6), new Pair(6,5)), new Node(), new Node(false, new Pair(8,5), new Pair(9,6)), new Node(false, new Pair(8,6), new Pair(9,5), new Pair(10,6)), new Node(false, new Pair(9,6), new Pair(10,5), new Pair(11,6)), new Node(false, new Pair(10,6), new Pair(11,5), new Pair(12,6), new Pair(11,7)), new Node(false, new Pair(11,6), new Pair(12,5), new Pair(12,7)), new Node(), new Node(false, new Pair(14,5), new Pair(14,7))},
+            {new Node(), new Node(false,new Pair(1,6), new Pair(2,7), new Pair(1,8)), new Node(false, new Pair(1,7), new Pair(2,6), new Pair(3,7), new Pair(2,8)), new Node(false, new Pair(2,7), new Pair(3,6), new Pair(3,8)), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(11,6),new Pair(12,7),new Pair(11,8)), new Node(false, new Pair(11,7), new Pair(12,6), new Pair(12,8)), new Node(), new Node(false, new Pair(14,6), new Pair(14,8))},
+            {new Node(), new Node(false,new Pair(1,7), new Pair(2,8), new Pair(1,9)), new Node(false, new Pair(1,8), new Pair(2,7), new Pair(3,8), new Pair(2,9)), new Node(false, new Pair(2,8), new Pair(3,7), new Pair(4,8), new Pair(3,9)), new Node(false, new Pair(3,8), new Pair(5,8), new Pair(4,9)), new Node(false, new Pair(4,8), new Pair(6,8), new Pair(5,9)), new Node(false, new Pair(5,8),new Pair(6,9)), new Node(), new Node(true, new Pair(9,8), new Pair(8,9)), new Node(false, new Pair(8,8), new Pair(10,8), new Pair(9,9)), new Node(false, new Pair(9,8), new Pair(11,8),new Pair(10,9)), new Node(false,new Pair(10,8), new Pair(11,7),new Pair(12,8), new Pair(11,9)), new Node(false, new Pair(11,8), new Pair(12,7), new Pair(12,9)), new Node(), new Node(false, new Pair(14,7), new Pair(14,9))},
+            {new Node(), new Node(false, new Pair(1,8), new Pair(2,9), new Pair(1,10)), new Node(false, new Pair(1,9), new Pair(2,8), new Pair(3,9), new Pair(2,10)), new Node(false, new Pair(2,9), new Pair(3,8), new Pair(4,9), new Pair(3,10)), new Node(false, new Pair(3,9), new Pair(4,8), new Pair(5,9), new Pair(4,10)), new Node(false,new Pair(4,9), new Pair(5,8), new Pair(6,9), new Pair(5,10)), new Node(false, new Pair(5,9), new Pair(6,8), new Pair(6,10)), new Node(), new Node(false, new Pair(8,8),new Pair(9,9), new Pair(8,10)), new Node(false, new Pair(8,9), new Pair(9,8), new Pair(10,9),new Pair(9,10)), new Node(false, new Pair(9,9), new Pair(10,8), new Pair(11,9), new Pair(10,10)), new Node(false, new Pair(10,9), new Pair(11,8), new Pair(12,9), new Pair(11,10)), new Node(false, new Pair(11,9), new Pair(12,8), new Pair(12,10)), new Node(), new Node(false, new Pair(14,8), new Pair(14,10))},
+            {new Node(), new Node(false, new Pair(1,9), new Pair(2,10), new Pair(1,11)), new Node(false, new Pair(1,10), new Pair(2,9), new Pair(3,10), new Pair(2,11)), new Node(false, new Pair(2,10),new Pair(3,9),new Pair(4,10), new Pair(3,11)), new Node(false, new Pair(3,10), new Pair(4,9), new Pair(5,10), new Pair(4,11)), new Node(false, new Pair(4,10), new Pair(5,9), new Pair(6,10), new Pair(5,11)), new Node(false, new Pair(5,10), new Pair(6,9), new Pair(6,11)), new Node(), new Node(false, new Pair(8,9), new Pair(9,10), new Pair(8,11)), new Node(false, new Pair(8,10), new Pair(9,9), new Pair(10,10), new Pair(9,11)), new Node(false,new Pair(9,10), new Pair(10,9), new Pair(11,10), new Pair(10,11)), new Node(false, new Pair(10,10),new Pair(11,9), new Pair(12,10), new Pair(11,11)), new Node(false, new Pair(11,10), new Pair(12,9), new Pair(12,11)), new Node(), new Node(false, new Pair(14,9), new Pair(14,11))},
+            {new Node(), new Node(false, new Pair(1,10), new Pair(2,11), new Pair(1,12)), new Node(false, new Pair(1,11), new Pair(2,10), new Pair(3,11), new Pair(2,12)), new Node(false, new Pair(2,11), new Pair(3,10),new Pair(4,11),new Pair(3,12)), new Node(false, new Pair(3,11), new Pair(4,10), new Pair(5,11),new Pair(4,12)), new Node(false, new Pair(4,11),new Pair(5,10),new Pair(6,11),new Pair(5,12)), new Node(false,new Pair(5,11),new Pair(6,10),new Pair(7,11),new Pair(6,12)),new Node(false, new Pair(6,11),new Pair(8,11),new Pair(7,12)),new Node(false, new Pair(7,11),new Pair(8,10),new Pair(9,11),new Pair(8,12)),new Node(false,new Pair(8,11),new Pair(9,10),new Pair(10,11),new Pair(9,12)), new Node(false,new Pair(9,11),new Pair(10,10),new Pair(11,11),new Pair(10,12)), new Node(false, new Pair(10,11),new Pair(11,10),new Pair(12,11),new Pair(11,12)), new Node(false,new Pair(11,11),new Pair(12,10),new Pair(12,12)),new Node(), new Node(false, new Pair(14,10), new Pair(14,12))},
+            {new Node(), new Node(false, new Pair(1,11),new Pair(2,12),new Pair(1,13)), new Node(false, new Pair(1,12),new Pair(2,11),new Pair(3,12),new Pair(2,13)), new Node(false, new Pair(2,12), new Pair(3,11),new Pair(4,12),new Pair(3,13)), new Node(false, new Pair(3,12),new Pair(4,11),new Pair(5,12),new Pair(4,13)), new Node(false,new Pair(4,12),new Pair(5,11),new Pair(6,12),new Pair(5,13)), new Node(false, new Pair(5,12), new Pair(6,11), new Pair(7,12), new Pair(6,13)), new Node(false, new Pair(6,12),new Pair(7,11),new Pair(8,12), new Pair(7,13)), new Node(false, new Pair(7,12),new Pair(8,11),new Pair(9,12),new Pair(8,13)), new Node(false, new Pair(8,12), new Pair(9,11), new Pair(10,12), new Pair(9,13)), new Node(false, new Pair(9,12),new Pair(10,11),new Pair(11,12),new Pair(10,13)), new Node(false,new Pair(10,12),new Pair(11,11),new Pair(12,12),new Pair(11,13)), new Node(false,new Pair(11,12),new Pair(12,11),new Pair(12,13)), new Node(), new Node(false, new Pair(14,11),new Pair(14,13))},
+            {new Node(), new Node(false, new Pair(1,12),new Pair(2,13)), new Node(false, new Pair(1,13),new Pair(2,12),new Pair(3,13)), new Node(false, new Pair(2,13),new Pair(3,12),new Pair(4,13)), new Node(false, new Pair(3,13), new Pair(4,12), new Pair(5,13)), new Node(false, new Pair(4,13),new Pair(5,12), new Pair(6,13)), new Node(false, new Pair(5,13), new Pair(6,12), new Pair(7,13)), new Node(false, new Pair(6,13), new Pair(7,12),new Pair(8,13)), new Node(false,new Pair(7,13),new Pair(8,12),new Pair(9,13)),new Node(false, new Pair(8,13),new Pair(9,12),new Pair(10,13)), new Node(false, new Pair(9,13),new Pair(10,12),new Pair(11,13),new Pair(10,14)), new Node(false, new Pair(10,13),new Pair(11,12),new Pair(12,13),new Pair(11,14)), new Node(false, new Pair(11,13),new Pair(12,12),new Pair(13,13),new Pair(12,14)), new Node(false, new Pair(12,13),new Pair(14,13),new Pair(13,14)),new Node(false,new Pair(13,13),new Pair(14,13),new Pair(14,14))},
+            {new Node(), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(10,13),new Pair(11,14)), new Node(false, new Pair(10,14),new Pair(11,13),new Pair(12,14)), new Node(false, new Pair(11,14),new Pair(12,13),new Pair(13,14)), new Node(false, new Pair(12,14),new Pair(13,13),new Pair(14,14)), new Node(false, new Pair(13,14),new Pair(14,13))}
     };
 
 
@@ -162,26 +167,6 @@ public class Board extends JPanel implements ActionListener,Abstract {
         }
     }
 
-    private void playGame(Graphics2D g2d) throws InterruptedException {
-
-        if (dying) {
-
-            death();
-
-        } else {
-
-
-          //  movePacman();
-           //
-            // System.out.println(DFS());
-            drawPacman(g2d);
-          //  checkMaze();
-           // System.out.println(DFS(g2d));
-      //      movePac(DFS(),g2d);
-
-
-        }
-    }
 
     private void showIntroScreen(Graphics2D g2d) {
 
@@ -199,20 +184,7 @@ public class Board extends JPanel implements ActionListener,Abstract {
         g2d.drawString(s, (SCREEN_SIZE - metr.stringWidth(s)) / 2, SCREEN_SIZE / 2);
     }
 
-    private void drawScore(Graphics2D g) {
 
-        int i;
-        String s;
-
-        g.setFont(smallFont);
-        g.setColor(new Color(96, 128, 255));
-        s = "Score: " + score;
-        g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
-
-        for (i = 0; i < pacsLeft; i++) {
-            g.drawImage(pacman3left, i * 28 + 8, SCREEN_SIZE + 1, this);
-        }
-    }
 
     private void checkMaze() {
 
@@ -241,177 +213,6 @@ public class Board extends JPanel implements ActionListener,Abstract {
         }
     }
 
-    @Override
-    public int moveCost() {
-        return 0;
-    }
-
-    @Override
-    public boolean isfinish() {
-        return false;
-//        if(currentNode.isPoint()) {
-//            return true;
-//        }else{
-//            return false;
-//        }
-    }
-
-
-    @Override
-    public void death() {
-        pacsLeft--;
-
-        if (pacsLeft == 0) {
-            inGame = false;
-        }
-
-       // continueLevel();
-    }
-
-    private LinkedList<Pair> BFS() throws InterruptedException {
-        LinkedList<Pair> queue = new LinkedList<Pair>();
-        List<Pair> visited = new ArrayList<>();
-        LinkedList<Pair> fringe = new LinkedList<Pair>();
-
-        queue.add(new Pair(0,0));
-        fringe.add(new Pair(0,0));
-        visited.add(new Pair(0,0));
-
-        while (queue.size() != 0){
-            Integer x = fringe.get(0).getFirst();
-            Integer y = fringe.get(0).getSecond();
-
-            Node currentNode = allPaths[x][y];
-//
-//            if(currentNode.isPoint()){
-//                return queue;
-//            }
-
-            Pair nb1 = currentNode.getNeighbour1();
-            Pair nb2 = currentNode.getNeighbour2();
-            Pair nb3 = currentNode.getNeighbour3();
-            Pair nb4 = currentNode.getNeighbour4();
-
-            if(!visited.contains(nb1) && nb1 != null && !nb1.equals(new Pair(x,y))){
-                visited.add(nb1);
-                queue.add(nb1);
-                fringe.add(nb1);
-                Node s = allPaths[nb1.getFirst()][nb1.getSecond()];
-                if(s.isPoint()){
-                    break;
-                }
-            }
-            if( !visited.contains(nb2) && nb2 != null && !nb2.equals(new Pair(x,y))){
-                visited.add(nb2);
-                queue.add(nb2);
-                fringe.add(nb2);
-                Node s = allPaths[nb2.getFirst()][nb2.getSecond()];
-                if(s.isPoint()){
-                    break;
-                }
-            }
-            if(!visited.contains(nb3) && nb3 != null && !nb3.equals(new Pair(x,y))){
-                visited.add(nb3);
-                queue.add(nb3);
-                fringe.add(nb3);
-                Node s = allPaths[nb3.getFirst()][nb3.getSecond()];
-                if(s.isPoint()){
-                    break;
-                }
-            }
-            if(!visited.contains(nb4) && nb4 != null && !nb4.equals(new Pair(x,y))){
-                visited.add(nb4);
-                queue.add(nb4);
-                fringe.add(nb4);
-                Node s = allPaths[nb4.getFirst()][nb4.getSecond()];
-                if(s.isPoint()){
-                    break;
-                }
-            }
-            System.out.println("path: "+queue);
-            System.out.println("Visited: "+visited);
-            System.out.println("Fringe: "+fringe);
-            Thread.sleep(1000);
-            fringe.remove(0);
-        }
-        return queue;
-    }
-
-    private List<Pair> DFS(){
-       List<Pair> visited = new ArrayList<>();
-       List<Pair> path = new ArrayList<>();
-       List<Pair> fringe = new ArrayList<>();
-
-       fringe.add(new Pair(0,0));
-       while (!fringe.isEmpty()){
-           Integer x = fringe.get(fringe.size()-1).getFirst();
-           Integer y = fringe.get(fringe.size()-1).getSecond();
-           //move pacman step to current node
-           Node currentNode = allPaths[x][y];
-
-           path.add(new Pair(x,y));
-           System.out.println("path: "+path);
-           visited.add(new Pair(x,y));
-           System.out.println("Visited: "+visited);
-           System.out.println("Fringe: "+fringe);
-
-
-           if(currentNode.isPoint()){
-               return path;
-           }
-
-           Pair nb1 = currentNode.getNeighbour1();
-           Pair nb2 = currentNode.getNeighbour2();
-           Pair nb3 = currentNode.getNeighbour3();
-           Pair nb4 = currentNode.getNeighbour4();
-
-
-           if(nb1 != null && !visited.contains(nb1)){
-               fringe.add(nb1);
-           }
-           if(nb2 != null && !visited.contains(nb2)){
-               fringe.add(nb2);
-           }
-           System.out.println("dd "+visited.contains(nb1));
-           if(nb3 != null && !visited.contains(nb3)){
-               fringe.add(nb3);
-           }
-           if(nb4 != null && !visited.contains(nb4)){
-               fringe.add(nb4);
-           }
-
-           fringe.remove(new Pair(x,y));
-
-           Integer pSize = path.size();
-           for(int i = pSize; i == 0; i--){
-               Integer x1 = path.get(path.size()-1).getFirst();
-               Integer y1 = path.get(path.size()-1).getSecond();
-               Node nodee = allPaths[x1][y1];
-               Pair nb1_1 = nodee.getNeighbour1();
-               Pair nb2_1 = nodee.getNeighbour2();
-               Pair nb3_1 = nodee.getNeighbour3();
-               Pair nb4_1 = nodee.getNeighbour4();
-               if(nb1_1 != null && !visited.contains(nb1_1)){
-                   break;
-               }
-               if(nb2_1 != null && !visited.contains(nb2_1)){
-                   break;
-               }
-               if(nb3_1 != null && !visited.contains(nb3_1)){
-                   break;
-               }
-               if(nb4_1 != null && !visited.contains(nb4_1)){
-                   break;
-               }
-               path.remove(new Pair(x1,y1));
-               //move pacman one step back
-           }
-
-       }
-       return path;
-    }
-
-    @Override
     public void movePacman() {
 
         int pos;
@@ -471,17 +272,18 @@ public class Board extends JPanel implements ActionListener,Abstract {
         }
     }
 
-    private void movePac(List<Pair> path) throws InterruptedException {
+    private void movePacDFS(List<Pair> path) throws InterruptedException {
 
-       // for(int i = 0; i< path.size();i++){
-          //  g2d.drawImage(pacman2up, pacman_x + 24*path.get(step).getFirst(), pacman_y + 24*path.get(step).getSecond(), this);
-        //    Thread.sleep(100);
-        //    repaint();
-       // }
+            pacman_x = 24*path.get(step_DFS).getFirst();
+            pacman_y = 24*path.get(step_DFS).getSecond();
+            step_DFS++;
+    }
 
-        pacman_x = 24*path.get(step).getFirst();
-        pacman_y = 24*path.get(step).getSecond();
-        step++;
+    private void movePacBFS(List<Pair> path) throws InterruptedException {
+
+        pacman_x = 24*path.get(step_BFS).getFirst();
+        pacman_y = 24*path.get(step_BFS).getSecond();
+        step_BFS++;
     }
 
     private void drawPacmanUp(Graphics2D g2d) {
@@ -613,38 +415,6 @@ public class Board extends JPanel implements ActionListener,Abstract {
         //continueLevel();
     }
 
-//    private void continueLevel() {
-//
-//        short i;
-//        int dx = 1;
-//        int random;
-//
-//        for (i = 0; i < N_GHOSTS; i++) {
-//
-//            ghost_y[i] = 4 * BLOCK_SIZE;
-//            ghost_x[i] = 4 * BLOCK_SIZE;
-//            ghost_dy[i] = 0;
-//            ghost_dx[i] = dx;
-//            dx = -dx;
-//            random = (int) (Math.random() * (currentSpeed + 1));
-//
-//            if (random > currentSpeed) {
-//                random = currentSpeed;
-//            }
-//
-//            ghostSpeed[i] = validSpeeds[random];
-//        }
-//
-//        pacman_x = 7 * BLOCK_SIZE;
-//        pacman_y = 11 * BLOCK_SIZE;
-//        pacmand_x = 0;
-//        pacmand_y = 0;
-//        req_dx = 0;
-//        req_dy = 0;
-//        view_dx = -1;
-//        view_dy = 0;
-//        dying = false;
-//    }
 
     private void loadImages() {
 
@@ -683,13 +453,29 @@ public class Board extends JPanel implements ActionListener,Abstract {
         g2d.fillRect(0, 0, d.width, d.height);
 
         drawMaze(g2d);
-        drawScore(g2d);
+
         doAnim();
 
-        if (inGame) {
-            pathGl=DFS();
 
+        if (inGame) {
             drawPacman(g2d);
+            if(firstTimeDFS){
+                System.out.println("****************DFS****************");
+                DFSSearch dfs = new DFSSearch();
+                pathGlDFS= dfs.DFS(allPaths);
+                System.out.println("Answer path: " + pathGlDFS);
+                dfs.showStatistics();
+                firstTimeDFS = false;
+            }
+            if(firstTimeBFS){
+                System.out.println("****************BFS****************");
+                BFSSearch bfs = new BFSSearch();
+                pathGlBFS= bfs.BFS(allPaths);
+                System.out.println("Answer path: " + pathGlBFS);
+                bfs.showStatistics();
+                firstTimeBFS = false;
+            }
+
             //  checkMaze();
             // System.out.println(DFS(g2d));
            // System.out.println("Result is "+DFS());
@@ -710,22 +496,20 @@ public class Board extends JPanel implements ActionListener,Abstract {
             int key = e.getKeyCode();
 
             if (inGame) {
-                if (key == KeyEvent.VK_LEFT) {
-                    req_dx = -1;
-                    req_dy = 0;
-                } else if (key == KeyEvent.VK_RIGHT) {
+                 if (key == KeyEvent.VK_SPACE) {
                     try {
-                        movePac(pathGl);
+                        movePacDFS(pathGlDFS);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                } else if (key == KeyEvent.VK_UP) {
-                    req_dx = 0;
-                    req_dy = -1;
-                } else if (key == KeyEvent.VK_DOWN) {
-                    req_dx = 0;
-                    req_dy = 1;
-                } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
+                }else if (key == KeyEvent.VK_ENTER) {
+                    try {
+                        movePacBFS(pathGlBFS);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                }
+                 else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
                     if (timer.isRunning()) {
