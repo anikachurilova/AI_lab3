@@ -173,7 +173,7 @@ public class Board extends JPanel implements ActionListener {
             drawPacman(g2d);
           //  checkMaze();
            // System.out.println(DFS(g2d));
-            movePac(DFS(g2d),g2d);
+           // movePac(DFS(g2d),g2d);
 
 
         }
