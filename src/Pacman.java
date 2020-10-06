@@ -10,8 +10,6 @@ public class Pacman extends JFrame {
 
     private void initUI() throws InterruptedException {
 
-      //  Board br = new Board();
-       // br.play();
         add(new Board());
 
 
@@ -35,8 +33,3 @@ public class Pacman extends JFrame {
         });
     }
 }
-
-//m = [
-//        [Node(true,[(1,2),(2,2)]), Node(false,[(0,0),(1,2)])],
-//        [2,2]
-//        ]

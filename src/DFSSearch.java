@@ -29,15 +29,10 @@ public class DFSSearch implements Search {
             amountOfSteps++;
             Integer x = fringe.get(fringe.size()-1).getFirst();
             Integer y = fringe.get(fringe.size()-1).getSecond();
-            //move pacman step to current node
             Node currentNode = allPaths[x][y];
 
             path.add(new Pair(x,y));
-           // System.out.println("path: "+path);
             visited.add(new Pair(x,y));
-           // System.out.println("Visited: "+visited);
-          //  System.out.println("Fringe: "+fringe);
-
 
             if(isCandy(currentNode)){
                 return path;
@@ -55,7 +50,6 @@ public class DFSSearch implements Search {
             if(nb2 != null && !visited.contains(nb2)){
                 fringe.add(nb2);
             }
-           // System.out.println("dd "+visited.contains(nb1));
             if(nb3 != null && !visited.contains(nb3)){
                 fringe.add(nb3);
             }
@@ -87,7 +81,6 @@ public class DFSSearch implements Search {
                     break;
                 }
                 path.remove(new Pair(x1,y1));
-                //move pacman one step back
             }
 
         }

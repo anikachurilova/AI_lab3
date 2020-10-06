@@ -45,20 +45,16 @@ public class Board extends JPanel implements ActionListener {
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int PAC_ANIM_DELAY = 2;
     private final int PACMAN_ANIM_COUNT = 4;
-   // private final int MAX_GHOSTS = 12;
     private final int PACMAN_SPEED = 6;
 
     private int pacAnimCount = PAC_ANIM_DELAY;
     private int pacAnimDir = 1;
     private int pacmanAnimPos = 0;
-   // private int N_GHOSTS = 6;
     private int pacsLeft, score;
     private int[] dx, dy;
     boolean firstTimeDFS =true;
     boolean firstTimeBFS = true;
-    //private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
 
-    //private Image ghost;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -108,11 +104,6 @@ public class Board extends JPanel implements ActionListener {
     {new Node(), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(13,10),new Pair(14,11)), new Node(false, new Pair(14,10),new Pair(13,11),new Pair(14,12)), new Node(false, new Pair(14,11),new Pair(13,12),new Pair(14,13)), new Node(false, new Pair(14,12),new Pair(13,13),new Pair(14,14)), new Node(false, new Pair(14,13),new Pair(13,14))}
 };
 
-
-    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
-    private final int maxSpeed = 6;
-
-    private int currentSpeed = 3;
     private short[] screenData;
     private Timer timer;
 
@@ -130,7 +121,6 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
 
         setBackground(Color.black);
-       // System.out.println(allPaths[0][0]);
 
     }
 
@@ -139,11 +129,7 @@ public class Board extends JPanel implements ActionListener {
         screenData = new short[N_BLOCKS * N_BLOCKS];
         mazeColor = new Color(5, 100, 5);
         d = new Dimension(400, 400);
-//        ghost_x = new int[MAX_GHOSTS];
-//        ghost_dx = new int[MAX_GHOSTS];
-//        ghost_y = new int[MAX_GHOSTS];
-//        ghost_dy = new int[MAX_GHOSTS];
-//        ghostSpeed = new int[MAX_GHOSTS];
+
         dx = new int[4];
         dy = new int[4];
 
@@ -190,80 +176,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
 
-
-    private void checkMaze() {
-
-        short i = 0;
-        boolean finished = true;
-
-        while (i < N_BLOCKS * N_BLOCKS && finished) {
-
-            if ((screenData[i] & 48) != 0) {
-                finished = false;
-            }
-
-            i++;
-        }
-
-        if (finished) {
-
-            score += 50;
-
-
-            if (currentSpeed < maxSpeed) {
-                currentSpeed++;
-            }
-
-            initLevel();
-        }
-    }
-
-    public void movePacman() {
-
-        int pos;
-        short ch;
-
-        if (req_dx == -pacmand_x && req_dy == -pacmand_y) {
-            pacmand_x = req_dx;
-            pacmand_y = req_dy;
-            view_dx = pacmand_x;
-            view_dy = pacmand_y;
-        }
-
-        if (pacman_x % BLOCK_SIZE == 0 && pacman_y % BLOCK_SIZE == 0) {
-            pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
-            ch = screenData[pos];
-
-            if ((ch & 16) != 0) {
-                screenData[pos] = (short) (ch & 15);
-                score++;
-            }
-
-            if (req_dx != 0 || req_dy != 0) {
-                if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
-                        || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
-                        || (req_dx == 0 && req_dy == -1 && (ch & 2) != 0)
-                        || (req_dx == 0 && req_dy == 1 && (ch & 8) != 0))) {
-                    pacmand_x = req_dx;
-                    pacmand_y = req_dy;
-                    view_dx = pacmand_x;
-                    view_dy = pacmand_y;
-                }
-            }
-
-            // Check for standstill
-            if ((pacmand_x == -1 && pacmand_y == 0 && (ch & 1) != 0)
-                    || (pacmand_x == 1 && pacmand_y == 0 && (ch & 4) != 0)
-                    || (pacmand_x == 0 && pacmand_y == -1 && (ch & 2) != 0)
-                    || (pacmand_x == 0 && pacmand_y == 1 && (ch & 8) != 0)) {
-                pacmand_x = 0;
-                pacmand_y = 0;
-            }
-        }
-        pacman_x = pacman_x + PACMAN_SPEED * pacmand_x;
-        pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
-    }
-
     private void drawPacman(Graphics2D g2d) {
 
         if (view_dx == -1) {
@@ -278,13 +190,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void movePac(List<Pair> path) throws InterruptedException {
-
-       // for(int i = 0; i< path.size();i++){
-          //  g2d.drawImage(pacman2up, pacman_x + 24*path.get(step).getFirst(), pacman_y + 24*path.get(step).getSecond(), this);
-        //    Thread.sleep(100);
-        //    repaint();
-       // }
-
         if(step <= path.size()-1){
             pacman_x = 24*path.get(step).getFirst();
             pacman_y = 24*path.get(step).getSecond();
@@ -409,7 +314,6 @@ public class Board extends JPanel implements ActionListener {
         pacsLeft = 3;
         score = 0;
         initLevel();
-        currentSpeed = 3;
     }
 
     private void initLevel() {
@@ -418,8 +322,6 @@ public class Board extends JPanel implements ActionListener {
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-
-        //continueLevel();
     }
 
 
@@ -463,9 +365,7 @@ public class Board extends JPanel implements ActionListener {
 
         doAnim();
 
-
         if (inGame) {
-
 
             drawPacman(g2d);
             if(firstTimeDFS){
@@ -485,9 +385,6 @@ public class Board extends JPanel implements ActionListener {
                 firstTimeBFS = false;
             }
 
-            //  checkMaze();
-            // System.out.println(DFS(g2d));
-           // System.out.println("Result is "+DFS());
         } else {
             showIntroScreen(g2d);
         }
@@ -545,24 +442,5 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         repaint();
-    }
-}
-class MultithreadingDemo extends Thread
-{
-    public void run()
-    {
-        try
-        {
-            // Displaying the thread that is running
-            System.out.println ("Thread " +
-                    Thread.currentThread().getId() +
-                    " is running");
-
-        }
-        catch (Exception e)
-        {
-            // Throwing an exception
-            System.out.println ("Exception is caught");
-        }
     }
 }

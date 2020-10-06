@@ -21,7 +21,6 @@ public class Node {
         return neighbour4;
     }
 
-    // private ArrayList<Pair> neighbours;
     private Pair neighbour1;
     private Pair neighbour2;
     private Pair neighbour3;

@@ -35,10 +35,6 @@ public class BFSSearch implements Search {
             Integer y = fringe.get(0).getSecond();
 
             Node currentNode = allPaths[x][y];
-//
-//            if(currentNode.isPoint()){
-//                return queue;
-//            }
 
             Pair nb1 = currentNode.getNeighbour1();
             Pair nb2 = currentNode.getNeighbour2();
@@ -81,10 +77,7 @@ public class BFSSearch implements Search {
                     break;
                 }
             }
-//            System.out.println("path: "+queue);
-//            System.out.println("Visited: "+visited);
-//            System.out.println("Fringe: "+fringe);
-          //  Thread.sleep(1000);
+
             fringe.remove(0);
         }
         return queue;
