@@ -33,8 +33,11 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private List<Pair> pathGl ;
+    private List<Pair> pathGlDFS = new ArrayList<>();
+    private List<Pair> pathGlBFS  = new ArrayList<>();
     private Integer step = 0;
+
+
 
 
     private final int BLOCK_SIZE = 24;
@@ -51,6 +54,8 @@ public class Board extends JPanel implements ActionListener {
    // private int N_GHOSTS = 6;
     private int pacsLeft, score;
     private int[] dx, dy;
+    boolean firstTimeDFS =true;
+    boolean firstTimeBFS = true;
     //private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
 
     //private Image ghost;
@@ -280,9 +285,12 @@ public class Board extends JPanel implements ActionListener {
         //    repaint();
        // }
 
-        pacman_x = 24*path.get(step).getFirst();
-        pacman_y = 24*path.get(step).getSecond();
-        step++;
+        if(step <= path.size()-1){
+            pacman_x = 24*path.get(step).getFirst();
+            pacman_y = 24*path.get(step).getSecond();
+            step++;
+        }
+
     }
 
     private void drawPacmanUp(Graphics2D g2d) {
@@ -457,7 +465,7 @@ public class Board extends JPanel implements ActionListener {
 
 
         if (inGame) {
-            pathGl=DFS();
+
 
             drawPacman(g2d);
             if(firstTimeDFS){
@@ -497,21 +505,12 @@ public class Board extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             if (inGame) {
-                if (key == KeyEvent.VK_LEFT) {
-                    req_dx = -1;
-                    req_dy = 0;
-                } else if (key == KeyEvent.VK_RIGHT) {
+                if (key == KeyEvent.VK_SPACE) {
                     try {
-                        movePac(pathGl);
+                        movePac(pathGlDFS);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                } else if (key == KeyEvent.VK_UP) {
-                    req_dx = 0;
-                    req_dy = -1;
-                } else if (key == KeyEvent.VK_DOWN) {
-                    req_dx = 0;
-                    req_dy = 1;
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
