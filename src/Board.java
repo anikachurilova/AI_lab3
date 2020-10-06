@@ -1,5 +1,3 @@
-
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,9 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 import javax.swing.ImageIcon;
@@ -87,7 +83,7 @@ public class Board extends JPanel implements ActionListener {
             {new Node(false, new Pair(4,0), new Pair(5,1), new Pair(6,0)), new Node(false, new Pair(5,0),new Pair(4,1),new Pair(5,2), new Pair(6,1)),new Node(false, new Pair(5,1), new Pair(4,2), new Pair(5,3), new Pair(6,2)), new Node(false, new Pair(5,2), new Pair(4,3), new Pair(5,4), new Pair(6,3)), new Node(false, new Pair(5,3), new Pair(4,4), new Pair(5,5), new Pair(6,4)), new Node(false, new Pair(5,4), new Pair(4,5), new Pair(5,6), new Pair(6,5)), new Node(false, new Pair(5,5), new Pair(4,6), new Pair(6,6)), new Node(), new Node(false, new Pair(4,8), new Pair(5,9), new Pair(6,8)), new Node(false, new Pair(5,8), new Pair(4,9), new Pair(5,10), new Pair(6,9)), new Node(false, new Pair(5,9), new Pair(4,10), new Pair(5,11), new Pair(6,10)), new Node(false,new Pair(5,10),new Pair(4,11),new Pair(5,12), new Pair(6,11)), new Node(false, new Pair(5,11), new Pair(4,12), new Pair(5,13), new Pair(6,12)), new Node(false, new Pair(5,12), new Pair(4,13), new Pair(5,14)), new Node(false, new Pair(5,13), new Pair(4,14), new Pair(6,14))},
             {new Node(false,new Pair(5,0), new Pair(6,1)), new Node(false, new Pair(6,0), new Pair(5,1), new Pair(6,2), new Pair(7,1)), new Node(false, new Pair(6,1), new Pair(5,2), new Pair(6,3), new Pair(7,2)), new Node(false, new Pair(6,3), new Pair(5,3), new Pair(6,4), new Pair(7,3)), new Node(false, new Pair(6,3), new Pair(5,4), new Pair(6,5)), new Node(false, new Pair(6,4), new Pair(5,5), new Pair(6,6)), new Node(false, new Pair(6,5), new Pair(5,6)), new Node(), new Node(false, new Pair(5,8), new Pair(6,9)), new Node(false, new Pair(6,8), new Pair(5,9), new Pair(6,10)), new Node(false, new Pair(6,9), new Pair(5,10), new Pair(6,11)), new Node(false, new Pair(6,10), new Pair(5,11), new Pair(6,12), new Pair(7,11)), new Node(false, new Pair(6,11), new Pair(5,12), new Pair(7,12)), new Node(), new Node(false, new Pair(5,14), new Pair(7,14))},
             {new Node(), new Node(false,new Pair(6,1), new Pair(7,2), new Pair(8,1)), new Node(false, new Pair(7,1), new Pair(6,2), new Pair(7,3), new Pair(8,2)), new Node(false, new Pair(7,2), new Pair(6,3), new Pair(8,3)), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(6,11),new Pair(7,12),new Pair(8,11)), new Node(false, new Pair(7,11), new Pair(6,12), new Pair(8,12)), new Node(), new Node(false, new Pair(6,14), new Pair(8,14))},
-            {new Node(), new Node(false,new Pair(7,1), new Pair(8,2), new Pair(9,1)), new Node(false, new Pair(8,1), new Pair(7,2), new Pair(8,3), new Pair(9,2)), new Node(false, new Pair(8,2), new Pair(7,3), new Pair(8,4), new Pair(9,3)), new Node(false, new Pair(8,3), new Pair(8,5), new Pair(9,4)), new Node(false, new Pair(8,4), new Pair(8,6), new Pair(9,5)), new Node(false, new Pair(8,5),new Pair(9,6)), new Node(), new Node(true, new Pair(8,9), new Pair(9,8)), new Node(false, new Pair(8,8), new Pair(8,10), new Pair(9,9)), new Node(false, new Pair(8,9), new Pair(8,11),new Pair(9,10)), new Node(false,new Pair(8,10), new Pair(7,11),new Pair(8,12), new Pair(9,11)), new Node(false, new Pair(8,11), new Pair(7,12), new Pair(9,12)), new Node(), new Node(false, new Pair(7,14), new Pair(9,14))},
+            {new Node(), new Node(true,new Pair(7,1), new Pair(8,2), new Pair(9,1)), new Node(false, new Pair(8,1), new Pair(7,2), new Pair(8,3), new Pair(9,2)), new Node(false, new Pair(8,2), new Pair(7,3), new Pair(8,4), new Pair(9,3)), new Node(false, new Pair(8,3), new Pair(8,5), new Pair(9,4)), new Node(false, new Pair(8,4), new Pair(8,6), new Pair(9,5)), new Node(false, new Pair(8,5),new Pair(9,6)), new Node(), new Node(false, new Pair(8,9), new Pair(9,8)), new Node(false, new Pair(8,8), new Pair(8,10), new Pair(9,9)), new Node(false, new Pair(8,9), new Pair(8,11),new Pair(9,10)), new Node(false,new Pair(8,10), new Pair(7,11),new Pair(8,12), new Pair(9,11)), new Node(false, new Pair(8,11), new Pair(7,12), new Pair(9,12)), new Node(), new Node(false, new Pair(7,14), new Pair(9,14))},
             {new Node(), new Node(false, new Pair(8,1), new Pair(9,2), new Pair(10,1)), new Node(false, new Pair(9,1), new Pair(8,2), new Pair(9,3), new Pair(10,2)), new Node(false, new Pair(9,2), new Pair(8,3), new Pair(9,4), new Pair(10,3)), new Node(false, new Pair(9,3), new Pair(8,4), new Pair(9,5), new Pair(10,4)), new Node(false,new Pair(9,4), new Pair(8,5), new Pair(9,6), new Pair(10,5)), new Node(false, new Pair(9,5), new Pair(8,6), new Pair(10,6)), new Node(), new Node(false, new Pair(8,8),new Pair(9,9), new Pair(10,8)), new Node(false, new Pair(9,8), new Pair(8,9), new Pair(9,10),new Pair(10,9)), new Node(false, new Pair(9,9), new Pair(8,10), new Pair(9,11), new Pair(10,10)), new Node(false, new Pair(9,10), new Pair(8,11), new Pair(9,12), new Pair(10,11)), new Node(false, new Pair(9,11), new Pair(8,12), new Pair(10,12)), new Node(), new Node(false, new Pair(8,14), new Pair(10,14))},
             {new Node(), new Node(false, new Pair(9,1), new Pair(10,2), new Pair(11,1)), new Node(false, new Pair(10,1), new Pair(9,2), new Pair(10,3), new Pair(11,2)), new Node(false, new Pair(10,2),new Pair(9,3),new Pair(10,4), new Pair(11,3)), new Node(false, new Pair(10,3), new Pair(9,4), new Pair(10,5), new Pair(11,4)), new Node(false, new Pair(10,4), new Pair(9,5), new Pair(10,6), new Pair(11,5)), new Node(false, new Pair(10,5), new Pair(9,6), new Pair(11,6)), new Node(), new Node(false, new Pair(9,8), new Pair(10,9), new Pair(11,8)), new Node(false, new Pair(10,8), new Pair(9,9), new Pair(10,10), new Pair(11,9)), new Node(false,new Pair(10,9), new Pair(9,10), new Pair(10,11), new Pair(11,10)), new Node(false, new Pair(10,10),new Pair(9,11), new Pair(10,12), new Pair(11,11)), new Node(false, new Pair(10,11), new Pair(9,12), new Pair(11,12)), new Node(), new Node(false, new Pair(9,14), new Pair(11,14))},
             {new Node(), new Node(false, new Pair(10,1), new Pair(11,2), new Pair(12,1)), new Node(false, new Pair(11,1), new Pair(10,2), new Pair(11,3), new Pair(12,2)), new Node(false, new Pair(11,2), new Pair(10,3),new Pair(11,4),new Pair(12,3)), new Node(false, new Pair(11,3), new Pair(10,4), new Pair(11,5),new Pair(12,4)), new Node(false, new Pair(11,4),new Pair(10,5),new Pair(11,6),new Pair(12,5)), new Node(false,new Pair(11,5),new Pair(10,6),new Pair(11,7),new Pair(12,6)),new Node(false, new Pair(11,6),new Pair(11,8),new Pair(12,7)),new Node(false, new Pair(11,7),new Pair(10,8),new Pair(11,9),new Pair(12,8)),new Node(false,new Pair(11,8),new Pair(10,9),new Pair(11,10),new Pair(12,9)), new Node(false,new Pair(11,9),new Pair(10,10),new Pair(11,11),new Pair(12,10)), new Node(false, new Pair(11,10),new Pair(10,11),new Pair(11,12),new Pair(12,11)), new Node(false,new Pair(11,11),new Pair(10,12),new Pair(12,12)),new Node(), new Node(false, new Pair(10,14), new Pair(12,14))},
@@ -246,6 +242,75 @@ public class Board extends JPanel implements ActionListener {
        // continueLevel();
     }
 
+    private LinkedList<Pair> BFS() throws InterruptedException {
+        LinkedList<Pair> queue = new LinkedList<Pair>();
+        List<Pair> visited = new ArrayList<>();
+        LinkedList<Pair> fringe = new LinkedList<Pair>();
+
+        queue.add(new Pair(0,0));
+        fringe.add(new Pair(0,0));
+        visited.add(new Pair(0,0));
+
+        while (queue.size() != 0){
+            Integer x = fringe.get(0).getFirst();
+            Integer y = fringe.get(0).getSecond();
+
+            Node currentNode = allPaths[x][y];
+//
+//            if(currentNode.isPoint()){
+//                return queue;
+//            }
+
+            Pair nb1 = currentNode.getNeighbour1();
+            Pair nb2 = currentNode.getNeighbour2();
+            Pair nb3 = currentNode.getNeighbour3();
+            Pair nb4 = currentNode.getNeighbour4();
+
+            if(!visited.contains(nb1) && nb1 != null && !nb1.equals(new Pair(x,y))){
+                visited.add(nb1);
+                queue.add(nb1);
+                fringe.add(nb1);
+                Node s = allPaths[nb1.getFirst()][nb1.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if( !visited.contains(nb2) && nb2 != null && !nb2.equals(new Pair(x,y))){
+                visited.add(nb2);
+                queue.add(nb2);
+                fringe.add(nb2);
+                Node s = allPaths[nb2.getFirst()][nb2.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb3) && nb3 != null && !nb3.equals(new Pair(x,y))){
+                visited.add(nb3);
+                queue.add(nb3);
+                fringe.add(nb3);
+                Node s = allPaths[nb3.getFirst()][nb3.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            if(!visited.contains(nb4) && nb4 != null && !nb4.equals(new Pair(x,y))){
+                visited.add(nb4);
+                queue.add(nb4);
+                fringe.add(nb4);
+                Node s = allPaths[nb4.getFirst()][nb4.getSecond()];
+                if(s.isPoint()){
+                    break;
+                }
+            }
+            System.out.println("path: "+queue);
+            System.out.println("Visited: "+visited);
+            System.out.println("Fringe: "+fringe);
+            Thread.sleep(1000);
+            fringe.remove(0);
+        }
+        return queue;
+    }
+
     private List<Pair> DFS(){
        List<Pair> visited = new ArrayList<>();
        List<Pair> path = new ArrayList<>();
@@ -255,14 +320,17 @@ public class Board extends JPanel implements ActionListener {
        while (!fringe.isEmpty()){
            Integer x = fringe.get(fringe.size()-1).getFirst();
            Integer y = fringe.get(fringe.size()-1).getSecond();
+
            //move pacman step to current node
            Node currentNode = allPaths[x][y];
+
 
            path.add(new Pair(x,y));
            System.out.println("path: "+path);
            visited.add(new Pair(x,y));
            System.out.println("Visited: "+visited);
            System.out.println("Fringe: "+fringe);
+
 
 
            if(currentNode.isPoint()){
@@ -559,14 +627,19 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        doDrawing(g);
+        try {
+            doDrawing(g);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void doDrawing(Graphics g) {
+    private void doDrawing(Graphics g) throws InterruptedException {
 
         Graphics2D g2d = (Graphics2D) g;
 
@@ -579,7 +652,7 @@ public class Board extends JPanel implements ActionListener {
 
         if (inGame) {
             playGame(g2d);
-            System.out.println(DFS());
+            System.out.println("Result is "+DFS());
         } else {
             showIntroScreen(g2d);
         }
