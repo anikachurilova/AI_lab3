@@ -21,7 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Board extends JPanel implements ActionListener {
+public class Board extends JPanel implements ActionListener,Abstract {
 
     private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
@@ -241,8 +241,24 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void death() {
+    @Override
+    public int moveCost() {
+        return 0;
+    }
 
+    @Override
+    public boolean isfinish() {
+        return false;
+//        if(currentNode.isPoint()) {
+//            return true;
+//        }else{
+//            return false;
+//        }
+    }
+
+
+    @Override
+    public void death() {
         pacsLeft--;
 
         if (pacsLeft == 0) {
@@ -395,7 +411,8 @@ public class Board extends JPanel implements ActionListener {
        return path;
     }
 
-    private void movePacman() {
+    @Override
+    public void movePacman() {
 
         int pos;
         short ch;
