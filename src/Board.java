@@ -33,13 +33,8 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private List<Pair> pathGlDFS ;
-    private List<Pair> pathGlBFS ;
-    private List<Pair> allPathsList = new ArrayList<>();
-    private Integer step_DFS = 0;
-    private Integer step_BFS = 0;
-    boolean firstTimeDFS = true;
-    boolean firstTimeBFS = true;
+    private List<Pair> pathGl ;
+    private Integer step = 0;
 
 
     private final int BLOCK_SIZE = 24;
@@ -63,45 +58,50 @@ public class Board extends JPanel implements ActionListener {
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
 
-    private int pacman_x, pacman_y, pacmand_x, pacmand_y,pacman_x_DFS, pacman_y_DFS, pacman_x_BFS, pacman_y_BFS;
+    private int pacman_x, pacman_y, pacmand_x, pacmand_y;
     private int req_dx, req_dy, view_dx, view_dy;
 
     private final short levelData[] = {
             3, 10, 10, 10, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6,
-            5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
-            5, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
-            5, 0, 0, 0, 1, 0, 0, 8, 0, 0, 0, 0, 0, 0, 4,
-            1, 2, 2, 2, 0, 0, 4, 0, 1, 0, 0, 0, 0, 0, 4,
-            1, 0, 0, 0, 0, 0, 4, 0, 1, 0, 0, 0, 0, 8, 4,
-            9, 0, 0, 0, 8, 8, 12, 0, 9, 8, 8, 0, 4, 0, 5,
-            1, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1, 4, 0, 5,
-            1, 1, 0, 0, 2, 2, 6, 0, 19, 2, 2, 0,4, 0, 5,
-            1, 1, 0, 0, 0, 0, 4, 0, 1, 0, 0, 0, 4, 0, 5,
-            1, 1, 0, 0, 0, 0, 4, 0, 1, 0, 0, 0, 4, 0, 5,
-            1, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 0, 5,
-            1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 5,
-            1, 9, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0, 0, 2, 4,
-            9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 8, 8, 8, 12
+            5, 3, 2,6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
+            5, 1, 0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
+            5, 1, 0, 12, 1, 0, 0, 8, 0, 0, 0, 0, 0, 0, 4,
+            1, 2, 2, 2, 0, 0, 4, 7, 1, 0, 0, 0, 0, 0,4,
+            1, 0, 0, 0, 0, 0, 4, 5, 1, 0, 0, 0, 0, 0, 4,
+            9, 0, 0, 0, 8, 8, 12, 5, 9, 8, 8, 0, 0, 0, 4,
+            7, 1, 0, 4, 11, 10, 10, 0, 10, 10, 14, 1, 0, 0, 4,
+            13, 1, 0, 0, 2, 2, 6, 5, 19, 2, 2, 0, 0, 0, 4,
+            3, 0, 0, 0, 0, 0, 4, 5, 1, 0, 0, 0, 0, 0, 4,
+            1, 0, 0, 0, 0, 0, 4, 13, 1, 0, 0, 0, 0, 0, 4,
+            1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4,
+            9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 12
     };
 
 
     private final Node [][] allPaths ={
-            {new Node(false,new Pair(1,0),new Pair(0,1)), new Node(false, new Pair(0,0),new Pair(2,0)),new Node(false, new Pair(1,0),new Pair(3,0)),new Node(false, new Pair(2,0),new Pair(4,0)), new Node(false, new Pair(3,0),new Pair(5,0), new Pair(4,1)), new Node(false, new Pair(4,0),new Pair(6,0), new Pair(5,1)), new Node(false, new Pair(5,0),new Pair(7,0), new Pair(6,1)), new Node(false, new Pair(6,0),new Pair(8,0), new Pair(7,1)), new Node(false, new Pair(7,0),new Pair(9,0), new Pair(8,1)), new Node(false, new Pair(8,0),new Pair(10,0), new Pair(9,1)), new Node(false, new Pair(9,0),new Pair(11,0), new Pair(10,1)), new Node(false, new Pair(10,0),new Pair(12,0), new Pair(11,1)), new Node(false, new Pair(11,0),new Pair(13,0), new Pair(12,1)),new Node(false, new Pair(13,0),new Pair(14,0), new Pair(13,1)), new Node(false, new Pair(13,0),new Pair(14,1))},
-            {new Node(false,new Pair(0,0),new Pair(0,2)), new Node(),new Node(),new Node(), new Node(false, new Pair(4,0),new Pair(5,1), new Pair(4,2)), new Node(false, new Pair(4,1),new Pair(5,0), new Pair(6,1), new Pair(5,2)), new Node(false, new Pair(5,1),new Pair(6,0), new Pair(7,1), new Pair(6,2)), new Node(false, new Pair(6,1),new Pair(7,0), new Pair(8,1),new Pair(7,2)), new Node(false, new Pair(7,1),new Pair(8,0), new Pair(9,1), new Pair(8,2)), new Node(false, new Pair(8,1),new Pair(9,0), new Pair(10,1), new Pair(9,2)), new Node(false, new Pair(9,1),new Pair(10,0), new Pair(11,1), new Pair(10,2)), new Node(false, new Pair(10,1),new Pair(11,0), new Pair(12,1),new Pair(11,2)), new Node(false, new Pair(11,1),new Pair(12,0), new Pair(13,1),new Pair(13,2)),new Node(false, new Pair(12,1),new Pair(13,0), new Pair(14,1),new Pair(13,2)), new Node(false, new Pair(13,1),new Pair(14,0), new Pair(14,2))},
-            {new Node (false,new Pair(0,1),new Pair(0,3)), new Node(),new Node(), new Node(), new Node(false, new Pair(4,1),new Pair(5,2),new Pair(4,3)), new Node(false, new Pair(4,2), new Pair(5,1),new Pair(6,2),new Pair(5,3)),new Node(false, new Pair(5,2),new Pair(6,1),new Pair(7,2),new Pair(6,3)),new Node(false, new Pair(6,2),new Pair(7,1),new Pair(8,2),new Pair(7,3)), new Node(false, new Pair(7,2), new Pair(8,1), new Pair(9,2), new Pair(8,3)), new Node(false, new Pair(8,2), new Pair(9,1), new Pair(10,2), new Pair(9,3)), new Node(false, new Pair(9,2), new Pair(10,1), new Pair(11,2), new Pair(10,3)), new Node(false, new Pair(10,2), new Pair(11,1), new Pair(12,2), new Pair(11,3)), new Node(false, new Pair(11,2), new Pair(12,1), new Pair(13,2), new Pair(12,3)), new Node(false, new Pair(12,2), new Pair(13,1), new Pair(14,2), new Pair(13,3)), new Node(false, new Pair(13,2), new Pair(14,1), new Pair(14,3))},
-            {new Node (false, new Pair(0,2), new Pair(0,4)), new Node(), new Node(), new Node(), new Node(false, new Pair(4,2), new Pair(5,3), new Pair(4,4)), new Node(false, new Pair(4,3), new Pair(5,2), new Pair(6,3), new Pair(5,4)), new Node(false, new Pair(5,3), new Pair(6,2), new Pair(7,3), new Pair(6,4)), new Node(false, new Pair(6,3), new Pair(7,2), new Pair(8,3)), new Node(false, new Pair(7,3), new Pair(8,2), new Pair(9,3), new Pair(8,4)), new Node(false, new Pair(8,3), new Pair(9,2), new Pair(10,3), new Pair(9,4)), new Node(false, new Pair(9,3), new Pair(10,2), new Pair(11,3), new Pair(10,4)), new Node(false, new Pair(10,3), new Pair(11,2), new Pair(12,3), new Pair(11,4)), new Node(false, new Pair(11,3), new Pair(12,2), new Pair(13,3), new Pair(12,4)), new Node(false, new Pair(12,3), new Pair(13,2), new Pair(14,3), new Pair(13,4)), new Node(false, new Pair(13,3), new Pair(14,2), new Pair(14,4))},
-            {new Node(false, new Pair(0,3), new Pair(1,4), new Pair(0,5)), new Node(false, new Pair(0,4), new Pair(2,4), new Pair(1,5)), new Node(false, new Pair(1,4), new Pair(3,4), new Pair(2,5)), new Node(false, new Pair(2,4), new Pair(4,4), new Pair(3,5)), new Node(false, new Pair(3,4), new Pair(4,3), new Pair(5,4), new Pair(4,5)), new Node(false, new Pair(4,4), new Pair(5,3), new Pair(6,4), new Pair(5,5)), new Node(false, new Pair(5,4), new Pair(6,3), new Pair(6,5)), new Node(), new Node(false, new Pair(8,3), new Pair(9,4), new Pair(8,5)), new Node(false, new Pair(8,4), new Pair(9,3), new Pair(10,4), new Pair(9,5)), new Node(false, new Pair(9,4), new Pair(10,3), new Pair(11,4), new Pair(10,5)), new Node(false, new Pair(10,4), new Pair(11,3), new Pair(12,4), new Pair(11,5)), new Node(false,new Pair(11,4), new Pair(12,3), new Pair(13,4), new Pair(12,5)), new Node( false, new Pair(12,4), new Pair(13,3), new Pair(14,4), new Pair(13,5)), new Node(false, new Pair(13,4),new Pair(14,3), new Pair(14,5))},
-            {new Node(false, new Pair(0,4), new Pair(1,5), new Pair(0,6)), new Node(false, new Pair(0,5),new Pair(1,4),new Pair(2,5), new Pair(1,6)),new Node(false, new Pair(1,5), new Pair(2,4), new Pair(3,5), new Pair(2,6)), new Node(false, new Pair(2,5), new Pair(3,4), new Pair(4,5), new Pair(3,6)), new Node(false, new Pair(3,5), new Pair(4,4), new Pair(5,5), new Pair(4,6)), new Node(false, new Pair(4,5), new Pair(5,4), new Pair(6,5), new Pair(5,6)), new Node(false, new Pair(5,5), new Pair(6,4), new Pair(6,6)), new Node(), new Node(false, new Pair(8,4), new Pair(9,5), new Pair(8,6)), new Node(false, new Pair(8,5), new Pair(9,4), new Pair(10,5), new Pair(9,6)), new Node(false, new Pair(9,5), new Pair(10,4), new Pair(11,5), new Pair(10,6)), new Node(false,new Pair(10,5),new Pair(11,4),new Pair(12,5), new Pair(11,6)), new Node(false, new Pair(11,5), new Pair(12,4), new Pair(13,5), new Pair(12,6)), new Node(false, new Pair(12,5), new Pair(13,4), new Pair(14,5)), new Node(false, new Pair(13,5), new Pair(14,4), new Pair(14,6))},
-            {new Node(false,new Pair(0,5), new Pair(1,6)), new Node(false, new Pair(0,6), new Pair(1,5), new Pair(2,6), new Pair(1,7)), new Node(false, new Pair(1,6), new Pair(2,5), new Pair(3,6), new Pair(2,7)), new Node(false, new Pair(2,6), new Pair(3,5), new Pair(4,6), new Pair(3,7)), new Node(false, new Pair(3,6), new Pair(4,5), new Pair(5,6)), new Node(false, new Pair(4,6), new Pair(5,5), new Pair(6,6)), new Node(false, new Pair(5,6), new Pair(6,5)), new Node(), new Node(false, new Pair(8,5), new Pair(9,6)), new Node(false, new Pair(8,6), new Pair(9,5), new Pair(10,6)), new Node(false, new Pair(9,6), new Pair(10,5), new Pair(11,6)), new Node(false, new Pair(10,6), new Pair(11,5), new Pair(12,6), new Pair(11,7)), new Node(false, new Pair(11,6), new Pair(12,5), new Pair(12,7)), new Node(), new Node(false, new Pair(14,5), new Pair(14,7))},
-            {new Node(), new Node(false,new Pair(1,6), new Pair(2,7), new Pair(1,8)), new Node(false, new Pair(1,7), new Pair(2,6), new Pair(3,7), new Pair(2,8)), new Node(false, new Pair(2,7), new Pair(3,6), new Pair(3,8)), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(11,6),new Pair(12,7),new Pair(11,8)), new Node(false, new Pair(11,7), new Pair(12,6), new Pair(12,8)), new Node(), new Node(false, new Pair(14,6), new Pair(14,8))},
-            {new Node(), new Node(false,new Pair(1,7), new Pair(2,8), new Pair(1,9)), new Node(false, new Pair(1,8), new Pair(2,7), new Pair(3,8), new Pair(2,9)), new Node(false, new Pair(2,8), new Pair(3,7), new Pair(4,8), new Pair(3,9)), new Node(false, new Pair(3,8), new Pair(5,8), new Pair(4,9)), new Node(false, new Pair(4,8), new Pair(6,8), new Pair(5,9)), new Node(false, new Pair(5,8),new Pair(6,9)), new Node(), new Node(true, new Pair(9,8), new Pair(8,9)), new Node(false, new Pair(8,8), new Pair(10,8), new Pair(9,9)), new Node(false, new Pair(9,8), new Pair(11,8),new Pair(10,9)), new Node(false,new Pair(10,8), new Pair(11,7),new Pair(12,8), new Pair(11,9)), new Node(false, new Pair(11,8), new Pair(12,7), new Pair(12,9)), new Node(), new Node(false, new Pair(14,7), new Pair(14,9))},
-            {new Node(), new Node(false, new Pair(1,8), new Pair(2,9), new Pair(1,10)), new Node(false, new Pair(1,9), new Pair(2,8), new Pair(3,9), new Pair(2,10)), new Node(false, new Pair(2,9), new Pair(3,8), new Pair(4,9), new Pair(3,10)), new Node(false, new Pair(3,9), new Pair(4,8), new Pair(5,9), new Pair(4,10)), new Node(false,new Pair(4,9), new Pair(5,8), new Pair(6,9), new Pair(5,10)), new Node(false, new Pair(5,9), new Pair(6,8), new Pair(6,10)), new Node(), new Node(false, new Pair(8,8),new Pair(9,9), new Pair(8,10)), new Node(false, new Pair(8,9), new Pair(9,8), new Pair(10,9),new Pair(9,10)), new Node(false, new Pair(9,9), new Pair(10,8), new Pair(11,9), new Pair(10,10)), new Node(false, new Pair(10,9), new Pair(11,8), new Pair(12,9), new Pair(11,10)), new Node(false, new Pair(11,9), new Pair(12,8), new Pair(12,10)), new Node(), new Node(false, new Pair(14,8), new Pair(14,10))},
-            {new Node(), new Node(false, new Pair(1,9), new Pair(2,10), new Pair(1,11)), new Node(false, new Pair(1,10), new Pair(2,9), new Pair(3,10), new Pair(2,11)), new Node(false, new Pair(2,10),new Pair(3,9),new Pair(4,10), new Pair(3,11)), new Node(false, new Pair(3,10), new Pair(4,9), new Pair(5,10), new Pair(4,11)), new Node(false, new Pair(4,10), new Pair(5,9), new Pair(6,10), new Pair(5,11)), new Node(false, new Pair(5,10), new Pair(6,9), new Pair(6,11)), new Node(), new Node(false, new Pair(8,9), new Pair(9,10), new Pair(8,11)), new Node(false, new Pair(8,10), new Pair(9,9), new Pair(10,10), new Pair(9,11)), new Node(false,new Pair(9,10), new Pair(10,9), new Pair(11,10), new Pair(10,11)), new Node(false, new Pair(10,10),new Pair(11,9), new Pair(12,10), new Pair(11,11)), new Node(false, new Pair(11,10), new Pair(12,9), new Pair(12,11)), new Node(), new Node(false, new Pair(14,9), new Pair(14,11))},
-            {new Node(), new Node(false, new Pair(1,10), new Pair(2,11), new Pair(1,12)), new Node(false, new Pair(1,11), new Pair(2,10), new Pair(3,11), new Pair(2,12)), new Node(false, new Pair(2,11), new Pair(3,10),new Pair(4,11),new Pair(3,12)), new Node(false, new Pair(3,11), new Pair(4,10), new Pair(5,11),new Pair(4,12)), new Node(false, new Pair(4,11),new Pair(5,10),new Pair(6,11),new Pair(5,12)), new Node(false,new Pair(5,11),new Pair(6,10),new Pair(7,11),new Pair(6,12)),new Node(false, new Pair(6,11),new Pair(8,11),new Pair(7,12)),new Node(false, new Pair(7,11),new Pair(8,10),new Pair(9,11),new Pair(8,12)),new Node(false,new Pair(8,11),new Pair(9,10),new Pair(10,11),new Pair(9,12)), new Node(false,new Pair(9,11),new Pair(10,10),new Pair(11,11),new Pair(10,12)), new Node(false, new Pair(10,11),new Pair(11,10),new Pair(12,11),new Pair(11,12)), new Node(false,new Pair(11,11),new Pair(12,10),new Pair(12,12)),new Node(), new Node(false, new Pair(14,10), new Pair(14,12))},
-            {new Node(), new Node(false, new Pair(1,11),new Pair(2,12),new Pair(1,13)), new Node(false, new Pair(1,12),new Pair(2,11),new Pair(3,12),new Pair(2,13)), new Node(false, new Pair(2,12), new Pair(3,11),new Pair(4,12),new Pair(3,13)), new Node(false, new Pair(3,12),new Pair(4,11),new Pair(5,12),new Pair(4,13)), new Node(false,new Pair(4,12),new Pair(5,11),new Pair(6,12),new Pair(5,13)), new Node(false, new Pair(5,12), new Pair(6,11), new Pair(7,12), new Pair(6,13)), new Node(false, new Pair(6,12),new Pair(7,11),new Pair(8,12), new Pair(7,13)), new Node(false, new Pair(7,12),new Pair(8,11),new Pair(9,12),new Pair(8,13)), new Node(false, new Pair(8,12), new Pair(9,11), new Pair(10,12), new Pair(9,13)), new Node(false, new Pair(9,12),new Pair(10,11),new Pair(11,12),new Pair(10,13)), new Node(false,new Pair(10,12),new Pair(11,11),new Pair(12,12),new Pair(11,13)), new Node(false,new Pair(11,12),new Pair(12,11),new Pair(12,13)), new Node(), new Node(false, new Pair(14,11),new Pair(14,13))},
-            {new Node(), new Node(false, new Pair(1,12),new Pair(2,13)), new Node(false, new Pair(1,13),new Pair(2,12),new Pair(3,13)), new Node(false, new Pair(2,13),new Pair(3,12),new Pair(4,13)), new Node(false, new Pair(3,13), new Pair(4,12), new Pair(5,13)), new Node(false, new Pair(4,13),new Pair(5,12), new Pair(6,13)), new Node(false, new Pair(5,13), new Pair(6,12), new Pair(7,13)), new Node(false, new Pair(6,13), new Pair(7,12),new Pair(8,13)), new Node(false,new Pair(7,13),new Pair(8,12),new Pair(9,13)),new Node(false, new Pair(8,13),new Pair(9,12),new Pair(10,13)), new Node(false, new Pair(9,13),new Pair(10,12),new Pair(11,13),new Pair(10,14)), new Node(false, new Pair(10,13),new Pair(11,12),new Pair(12,13),new Pair(11,14)), new Node(false, new Pair(11,13),new Pair(12,12),new Pair(13,13),new Pair(12,14)), new Node(false, new Pair(12,13),new Pair(14,13),new Pair(13,14)),new Node(false,new Pair(13,13),new Pair(14,13),new Pair(14,14))},
-            {new Node(), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(10,13),new Pair(11,14)), new Node(false, new Pair(10,14),new Pair(11,13),new Pair(12,14)), new Node(false, new Pair(11,14),new Pair(12,13),new Pair(13,14)), new Node(false, new Pair(12,14),new Pair(13,13),new Pair(14,14)), new Node(false, new Pair(13,14),new Pair(14,13))}
-    };
+            {new Node(false,new Pair(0,1),new Pair(1,0)), new Node(false, new Pair(0,0),new Pair(0,2)),new Node(false, new Pair(0,1),new Pair(0,3)),new Node(false, new Pair(0,2),new Pair(0,4)), new Node(false, new Pair(0,3),new Pair(0,5), new Pair(1,4)), new Node(false, new Pair(0,4),new Pair(0,6), new Pair(1,5)), new Node(false, new Pair(0,5),new Pair(0,7), new Pair(1,6)), new Node(false, new Pair(0,6),new Pair(0,8), new Pair(1,7)), new Node(false, new Pair(0,7),new Pair(0,9), new Pair(1,8)), new Node(false, new Pair(0,8),new Pair(0,10), new Pair(1,9)), new Node(false, new Pair(0,9),new Pair(0,11), new Pair(1,10)), new Node(false, new Pair(0,10),new Pair(0,12), new Pair(1,11)), new Node(false, new Pair(0,11),new Pair(0,13), new Pair(1,12)),new Node(false, new Pair(0,13),new Pair(0,14), new Pair(1,13)), new Node(false, new Pair(0,13),new Pair(1,14))},
+            {new Node(false,new Pair(0,0),new Pair(2,0)), new Node(),new Node(),new Node(), new Node(false, new Pair(0,4),new Pair(1,5), new Pair(2,4)), new Node(false, new Pair(1,4),new Pair(0,5), new Pair(1,6), new Pair(2,5)), new Node(false, new Pair(1,5),new Pair(0,6), new Pair(1,7), new Pair(2,6)), new Node(false, new Pair(1,6),new Pair(0,7), new Pair(1,8),new Pair(2,7)), new Node(false, new Pair(1,7),new Pair(0,8), new Pair(1,9), new Pair(2,8)), new Node(false, new Pair(1,8),new Pair(0,9), new Pair(1,10), new Pair(2,9)), new Node(false, new Pair(1,9),new Pair(0,10), new Pair(1,11), new Pair(2,10)), new Node(false, new Pair(1,10),new Pair(0,11), new Pair(1,12),new Pair(2,11)), new Node(false, new Pair(1,11),new Pair(0,12), new Pair(1,13),new Pair(2,13)),new Node(false, new Pair(1,12),new Pair(0,13), new Pair(1,14),new Pair(2,13)), new Node(false, new Pair(1,13),new Pair(0,14), new Pair(2,14))},
+            {new Node (false,new Pair(1,0),new Pair(3,0)), new Node(),new Node(), new Node(), new Node(false, new Pair(1,4),new Pair(2,5),new Pair(3,4)), new Node(false, new Pair(2,4), new Pair(1,5),new Pair(2,6),new Pair(3,5)),new Node(false, new Pair(2,5),new Pair(1,6),new Pair(2,7),new Pair(3,6)),new Node(false, new Pair(2,6),new Pair(1,7),new Pair(2,8),new Pair(3,7)), new Node(false, new Pair(2,7), new Pair(1,8), new Pair(2,9), new Pair(3,8)), new Node(false, new Pair(2,8), new Pair(1,9), new Pair(2,10), new Pair(3,9)), new Node(false, new Pair(2,9), new Pair(1,10), new Pair(2,11), new Pair(3,10)), new Node(false, new Pair(2,10), new Pair(1,11), new Pair(2,12), new Pair(3,11)), new Node(false, new Pair(2,11), new Pair(1,12), new Pair(2,13), new Pair(3,12)), new Node(false, new Pair(2,12), new Pair(1,13), new Pair(2,14), new Pair(3,13)), new Node(false, new Pair(2,13), new Pair(1,14), new Pair(3,14))},
+            {new Node (false, new Pair(2,0), new Pair(4,0)), new Node(), new Node(), new Node(), new Node(false, new Pair(2,4), new Pair(3,5), new Pair(4,4)), new Node(false, new Pair(3,4), new Pair(2,5), new Pair(3,6), new Pair(4,5)), new Node(false, new Pair(3,5), new Pair(2,6), new Pair(3,7), new Pair(4,6)), new Node(false, new Pair(3,6), new Pair(2,7), new Pair(3,8)), new Node(false, new Pair(3,7), new Pair(2,8), new Pair(3,9), new Pair(4,8)), new Node(false, new Pair(3,8), new Pair(2,9), new Pair(3,10), new Pair(4,9)), new Node(false, new Pair(3,9), new Pair(2,10), new Pair(3,11), new Pair(4,10)), new Node(false, new Pair(3,10), new Pair(2,11), new Pair(3,12), new Pair(4,11)), new Node(false, new Pair(3,11), new Pair(2,12), new Pair(3,13), new Pair(4,12)), new Node(false, new Pair(3,12), new Pair(2,13), new Pair(3,14), new Pair(4,13)), new Node(false, new Pair(3,13), new Pair(2,14), new Pair(4,14))},
+
+
+    {new Node(false, new Pair(3,0), new Pair(4,1), new Pair(5,0)), new Node(false, new Pair(4,0), new Pair(4,2), new Pair(5,1)), new Node(false, new Pair(4,1), new Pair(4,3), new Pair(5,2)), new Node(false, new Pair(4,2), new Pair(4,4), new Pair(5,3)), new Node(false, new Pair(4,3), new Pair(3,4), new Pair(4,5), new Pair(5,4)), new Node(false, new Pair(4,4), new Pair(3,5), new Pair(4,6), new Pair(5,5)), new Node(false, new Pair(4,5), new Pair(3,6), new Pair(5,6)), new Node(), new Node(false, new Pair(3,8), new Pair(4,9), new Pair(5,8)), new Node(false, new Pair(4,8), new Pair(3,9), new Pair(4,10), new Pair(5,9)), new Node(false, new Pair(4,9), new Pair(3,10), new Pair(4,11), new Pair(5,10)), new Node(false, new Pair(4,10), new Pair(3,11), new Pair(4,12), new Pair(5,11)), new Node(false,new Pair(4,11), new Pair(3,12), new Pair(4,13), new Pair(5,12)), new Node( false, new Pair(4,12), new Pair(3,13), new Pair(4,14), new Pair(5,13)), new Node(false, new Pair(4,13),new Pair(3,14), new Pair(5,14))},
+    {new Node(false, new Pair(4,0), new Pair(5,1), new Pair(6,0)), new Node(false, new Pair(5,0),new Pair(4,1),new Pair(5,2), new Pair(6,1)),new Node(false, new Pair(5,1), new Pair(4,2), new Pair(5,3), new Pair(6,2)), new Node(false, new Pair(5,2), new Pair(4,3), new Pair(5,4), new Pair(6,3)), new Node(false, new Pair(5,3), new Pair(4,4), new Pair(5,5), new Pair(6,4)), new Node(false, new Pair(5,4), new Pair(4,5), new Pair(5,6), new Pair(6,5)), new Node(false, new Pair(5,5), new Pair(4,6), new Pair(6,6)), new Node(), new Node(false, new Pair(4,8), new Pair(5,9), new Pair(6,8)), new Node(false, new Pair(5,8), new Pair(4,9), new Pair(5,10), new Pair(6,9)), new Node(false, new Pair(5,9), new Pair(4,10), new Pair(5,11), new Pair(6,10)), new Node(false,new Pair(5,10),new Pair(4,11),new Pair(5,12), new Pair(6,11)), new Node(false, new Pair(5,11), new Pair(4,12), new Pair(5,13), new Pair(6,12)), new Node(false, new Pair(5,12), new Pair(4,13), new Pair(5,14)), new Node(false, new Pair(5,13), new Pair(4,14), new Pair(6,14))},
+    {new Node(false,new Pair(5,0), new Pair(6,1)), new Node(false, new Pair(6,0), new Pair(5,1), new Pair(6,2), new Pair(7,1)), new Node(false, new Pair(6,1), new Pair(5,2), new Pair(6,3), new Pair(7,2)), new Node(false, new Pair(6,3), new Pair(5,3), new Pair(6,4), new Pair(7,3)), new Node(false, new Pair(6,3), new Pair(5,4), new Pair(6,5)), new Node(false, new Pair(6,4), new Pair(5,5), new Pair(6,6)), new Node(false, new Pair(6,5), new Pair(5,6)), new Node(), new Node(false, new Pair(5,8), new Pair(6,9)), new Node(false, new Pair(6,8), new Pair(5,9), new Pair(6,10)), new Node(false, new Pair(6,9), new Pair(5,10), new Pair(6,11)), new Node(false, new Pair(6,10), new Pair(5,11), new Pair(6,12), new Pair(7,11)), new Node(false, new Pair(6,11), new Pair(5,12), new Pair(7,12)), new Node(), new Node(false, new Pair(5,14), new Pair(7,14))},
+    {new Node(), new Node(false,new Pair(6,1), new Pair(7,2), new Pair(8,1)), new Node(false, new Pair(7,1), new Pair(6,2), new Pair(7,3), new Pair(8,2)), new Node(false, new Pair(7,2), new Pair(6,3), new Pair(8,3)), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(6,11),new Pair(7,12),new Pair(8,11)), new Node(false, new Pair(7,11), new Pair(6,12), new Pair(8,12)), new Node(), new Node(false, new Pair(6,14), new Pair(8,14))},
+
+
+    {new Node(), new Node(false,new Pair(7,1), new Pair(8,2), new Pair(9,1)), new Node(false, new Pair(8,1), new Pair(7,2), new Pair(8,3), new Pair(9,2)), new Node(false, new Pair(8,2), new Pair(7,3), new Pair(8,4), new Pair(9,3)), new Node(false, new Pair(8,3), new Pair(8,5), new Pair(9,4)), new Node(false, new Pair(8,4), new Pair(8,6), new Pair(9,5)), new Node(false, new Pair(8,5),new Pair(9,6)), new Node(), new Node(true, new Pair(8,9), new Pair(9,8)), new Node(false, new Pair(8,8), new Pair(8,10), new Pair(9,9)), new Node(false, new Pair(8,9), new Pair(8,11),new Pair(9,10)), new Node(false,new Pair(8,10), new Pair(7,11),new Pair(8,12), new Pair(9,11)), new Node(false, new Pair(8,11), new Pair(7,12), new Pair(9,12)), new Node(), new Node(false, new Pair(7,14), new Pair(9,14))},
+    {new Node(), new Node(false, new Pair(8,1), new Pair(9,2), new Pair(10,1)), new Node(false, new Pair(9,1), new Pair(8,2), new Pair(9,3), new Pair(10,2)), new Node(false, new Pair(9,2), new Pair(8,3), new Pair(9,4), new Pair(10,3)), new Node(false, new Pair(9,3), new Pair(8,4), new Pair(9,5), new Pair(10,4)), new Node(false,new Pair(9,4), new Pair(8,5), new Pair(9,6), new Pair(10,5)), new Node(false, new Pair(9,5), new Pair(8,6), new Pair(10,6)), new Node(), new Node(false, new Pair(8,8),new Pair(9,9), new Pair(10,8)), new Node(false, new Pair(9,8), new Pair(8,9), new Pair(9,10),new Pair(10,9)), new Node(false, new Pair(9,9), new Pair(8,10), new Pair(9,11), new Pair(10,10)), new Node(false, new Pair(9,10), new Pair(8,11), new Pair(9,12), new Pair(10,11)), new Node(false, new Pair(9,11), new Pair(8,12), new Pair(10,12)), new Node(), new Node(false, new Pair(8,14), new Pair(10,14))},
+    {new Node(), new Node(false, new Pair(9,1), new Pair(10,2), new Pair(11,1)), new Node(false, new Pair(10,1), new Pair(9,2), new Pair(10,3), new Pair(11,2)), new Node(false, new Pair(10,2),new Pair(9,3),new Pair(10,4), new Pair(11,3)), new Node(false, new Pair(10,3), new Pair(9,4), new Pair(10,5), new Pair(11,4)), new Node(false, new Pair(10,4), new Pair(9,5), new Pair(10,6), new Pair(11,5)), new Node(false, new Pair(10,5), new Pair(9,6), new Pair(11,6)), new Node(), new Node(false, new Pair(9,8), new Pair(10,9), new Pair(11,8)), new Node(false, new Pair(10,8), new Pair(9,9), new Pair(10,10), new Pair(11,9)), new Node(false,new Pair(10,9), new Pair(9,10), new Pair(10,11), new Pair(11,10)), new Node(false, new Pair(10,10),new Pair(9,11), new Pair(10,12), new Pair(11,11)), new Node(false, new Pair(10,11), new Pair(9,12), new Pair(11,12)), new Node(), new Node(false, new Pair(9,14), new Pair(11,14))},
+    {new Node(), new Node(false, new Pair(10,1), new Pair(11,2), new Pair(12,1)), new Node(false, new Pair(11,1), new Pair(10,2), new Pair(11,3), new Pair(12,2)), new Node(false, new Pair(11,2), new Pair(10,3),new Pair(11,4),new Pair(12,3)), new Node(false, new Pair(11,3), new Pair(10,4), new Pair(11,5),new Pair(12,4)), new Node(false, new Pair(11,4),new Pair(10,5),new Pair(11,6),new Pair(12,5)), new Node(false,new Pair(11,5),new Pair(10,6),new Pair(11,7),new Pair(12,6)),new Node(false, new Pair(11,6),new Pair(11,8),new Pair(12,7)),new Node(false, new Pair(11,7),new Pair(10,8),new Pair(11,9),new Pair(12,8)),new Node(false,new Pair(11,8),new Pair(10,9),new Pair(11,10),new Pair(12,9)), new Node(false,new Pair(11,9),new Pair(10,10),new Pair(11,11),new Pair(12,10)), new Node(false, new Pair(11,10),new Pair(10,11),new Pair(11,12),new Pair(12,11)), new Node(false,new Pair(11,11),new Pair(10,12),new Pair(12,12)),new Node(), new Node(false, new Pair(10,14), new Pair(12,14))},
+
+    {new Node(), new Node(false, new Pair(11,1),new Pair(12,2),new Pair(13,1)), new Node(false, new Pair(12,1),new Pair(11,2),new Pair(12,3),new Pair(13,2)), new Node(false, new Pair(12,2), new Pair(11,3),new Pair(12,4),new Pair(13,3)), new Node(false, new Pair(12,3),new Pair(11,4),new Pair(12,5),new Pair(13,4)), new Node(false,new Pair(12,4),new Pair(11,5),new Pair(12,6),new Pair(13,5)), new Node(false, new Pair(12,5), new Pair(11,6), new Pair(12,7), new Pair(13,6)), new Node(false, new Pair(12,6),new Pair(11,7),new Pair(12,8), new Pair(13,7)), new Node(false, new Pair(12,7),new Pair(11,8),new Pair(12,9),new Pair(13,8)), new Node(false, new Pair(12,8), new Pair(11,9), new Pair(12,10), new Pair(13,9)), new Node(false, new Pair(12,9),new Pair(11,10),new Pair(12,11),new Pair(13,10)), new Node(false,new Pair(12,10),new Pair(11,11),new Pair(12,12),new Pair(13,11)), new Node(false,new Pair(12,11),new Pair(12,11),new Pair(13,12)), new Node(), new Node(false, new Pair(11,14),new Pair(13,14))},
+    {new Node(), new Node(false, new Pair(1,12),new Pair(13,2)), new Node(false, new Pair(13,1),new Pair(12,2),new Pair(13,3)), new Node(false, new Pair(13,2),new Pair(12,3),new Pair(13,4)), new Node(false, new Pair(13,3), new Pair(12,4), new Pair(13,5)), new Node(false, new Pair(13,4),new Pair(12,5), new Pair(13,6)), new Node(false, new Pair(13,5), new Pair(12,6), new Pair(13,7)), new Node(false, new Pair(13,6), new Pair(12,7),new Pair(13,8)), new Node(false,new Pair(13,7),new Pair(12,8),new Pair(13,9)),new Node(false, new Pair(13,8),new Pair(12,9),new Pair(13,10)), new Node(false, new Pair(13,9),new Pair(12,10),new Pair(13,11),new Pair(14,10)), new Node(false, new Pair(13,10),new Pair(12,11),new Pair(13,12),new Pair(14,11)), new Node(false, new Pair(13,11),new Pair(12,12),new Pair(13,13),new Pair(14,12)), new Node(false, new Pair(13,12),new Pair(13,14),new Pair(14,13)),new Node(false,new Pair(13,13),new Pair(13,14),new Pair(14,14))},
+    {new Node(), new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(),new Node(false,new Pair(13,10),new Pair(14,11)), new Node(false, new Pair(14,10),new Pair(13,11),new Pair(14,12)), new Node(false, new Pair(14,11),new Pair(13,12),new Pair(14,13)), new Node(false, new Pair(14,12),new Pair(13,13),new Pair(14,14)), new Node(false, new Pair(14,13),new Pair(13,14))}
+};
 
 
     private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
@@ -272,18 +272,17 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void movePacDFS(List<Pair> path) throws InterruptedException {
+    private void movePac(List<Pair> path) throws InterruptedException {
 
-            pacman_x = 24*path.get(step_DFS).getFirst();
-            pacman_y = 24*path.get(step_DFS).getSecond();
-            step_DFS++;
-    }
+       // for(int i = 0; i< path.size();i++){
+          //  g2d.drawImage(pacman2up, pacman_x + 24*path.get(step).getFirst(), pacman_y + 24*path.get(step).getSecond(), this);
+        //    Thread.sleep(100);
+        //    repaint();
+       // }
 
-    private void movePacBFS(List<Pair> path) throws InterruptedException {
-
-        pacman_x = 24*path.get(step_BFS).getFirst();
-        pacman_y = 24*path.get(step_BFS).getSecond();
-        step_BFS++;
+        pacman_x = 24*path.get(step).getFirst();
+        pacman_y = 24*path.get(step).getSecond();
+        step++;
     }
 
     private void drawPacmanUp(Graphics2D g2d) {
@@ -458,6 +457,8 @@ public class Board extends JPanel implements ActionListener {
 
 
         if (inGame) {
+            pathGl=DFS();
+
             drawPacman(g2d);
             if(firstTimeDFS){
                 System.out.println("****************DFS****************");
@@ -496,20 +497,22 @@ public class Board extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             if (inGame) {
-                 if (key == KeyEvent.VK_SPACE) {
+                if (key == KeyEvent.VK_LEFT) {
+                    req_dx = -1;
+                    req_dy = 0;
+                } else if (key == KeyEvent.VK_RIGHT) {
                     try {
-                        movePacDFS(pathGlDFS);
+                        movePac(pathGl);
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
                     }
-                }else if (key == KeyEvent.VK_ENTER) {
-                    try {
-                        movePacBFS(pathGlBFS);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
-                }
-                 else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
+                } else if (key == KeyEvent.VK_UP) {
+                    req_dx = 0;
+                    req_dy = -1;
+                } else if (key == KeyEvent.VK_DOWN) {
+                    req_dx = 0;
+                    req_dy = 1;
+                } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
                     if (timer.isRunning()) {
