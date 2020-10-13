@@ -11,8 +11,6 @@ public class Pacman extends JFrame {
     private void initUI() throws InterruptedException {
 
         add(new Board());
-
-
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(380, 420);
