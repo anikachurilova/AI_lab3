@@ -37,164 +37,84 @@ public class Board extends JPanel implements ActionListener {
     private List<Pair> pathGlBFS  = new ArrayList<>();
     private Integer step = 0;
     private static Graph graph;
+    private static Pair[] vertexCoord = {
+            new Pair(0,0), new Pair(1,0),new Pair(2,0), new Pair(3,0),new Pair(4,0), new Pair(5,0),
+            new Pair(6,0), new Pair(8,0),new Pair(9,0), new Pair(10,0),new Pair(11,0), new Pair(12,0),
+            new Pair(13,0), new Pair(14,0),new Pair(3,1), new Pair(6,1),new Pair(8,1), new Pair(11,1),
+            new Pair(0,2), new Pair(3,2),new Pair(4,2), new Pair(5,2),new Pair(6,2), new Pair(7,2),
+            new Pair(8,2), new Pair(9,2),new Pair(10,2), new Pair(11,2),new Pair(0,3), new Pair(1,3),
+            new Pair(2,3), new Pair(3,3),new Pair(5,3), new Pair(9,3),new Pair(11,3), new Pair(12,3),
+            new Pair(13,3), new Pair(14,3),new Pair(14,2), new Pair(0,4),new Pair(3,4), new Pair(5,4),
+            new Pair(6,4), new Pair(8,4),new Pair(9,4), new Pair(11,4),new Pair(14,4), new Pair(0,5),
+            new Pair(1,5), new Pair(2,5),new Pair(3,5), new Pair(6,5),new Pair(8,5), new Pair(11,5),
+            new Pair(12,5), new Pair(13,5),new Pair(14,5), new Pair(0,6),new Pair(3,6), new Pair(5,6),
+            new Pair(6,6), new Pair(7,6),new Pair(8,6), new Pair(9,6),new Pair(11,6), new Pair(14,6),
+            new Pair(0,7), new Pair(1,7),new Pair(3,7), new Pair(5,7),new Pair(7,7), new Pair(9,7),
+            new Pair(11,7), new Pair(13,7),new Pair(14,7), new Pair(1,8),new Pair(3,8), new Pair(4,8),
+            new Pair(5,8), new Pair(9,8),new Pair(10,8), new Pair(11,8),new Pair(13,8), new Pair(0,9),
+            new Pair(1,9), new Pair(2,9),new Pair(3,9), new Pair(5,9),new Pair(9,9), new Pair(11,9),
+            new Pair(12,9), new Pair(13,9),new Pair(14,9), new Pair(3,10),new Pair(5,10), new Pair(6,10),
+            new Pair(7,10), new Pair(8,10),new Pair(9,10), new Pair(11,10),new Pair(1,11), new Pair(2,11),
+            new Pair(3,11),new Pair(5,11), new Pair(9,11),new Pair(11,11),new Pair(12,11), new Pair(13,11),
+            new Pair(1,12),new Pair(3,12), new Pair(4,12),new Pair(5,12),new Pair(6,12), new Pair(8,12),
+            new Pair(9,12),new Pair(10,12), new Pair(11,12),new Pair(13,12),new Pair(1,13), new Pair(2,13),
+            new Pair(3,13),new Pair(6,13), new Pair(8,13),new Pair(11,13),new Pair(12,13), new Pair(13,13),
+            new Pair(2,14),new Pair(6,14), new Pair(7,14),new Pair(8,14),new Pair(12,14)
+    };
 
     static void initGraph(){
         graph = new Graph(131);
         int vertices = 130;
-        graph.addEgde(0, 1, 1);
-        graph.addEgde(1, 2, 1);
-        graph.addEgde(2, 3, 1);
-        graph.addEgde(3, 4, 1);
-        graph.addEgde(3, 14, 1);
-        graph.addEgde(4, 5, 1);
-        graph.addEgde(5, 6, 1);
-        graph.addEgde(6, 15, 1);
-        graph.addEgde(15, 22, 1);
-        graph.addEgde(16, 7, 1);
-        graph.addEgde(7, 8, 1);
-        graph.addEgde(8, 9, 1);
-        graph.addEgde(9, 10, 1);
-        graph.addEgde(10, 17, 1);
-        graph.addEgde(10, 11, 1);
-        graph.addEgde(11, 12, 1);
-        graph.addEgde(12, 13, 1);
-        graph.addEgde(14, 19, 1);
-        graph.addEgde(19, 20, 1);
-        graph.addEgde(20, 21, 1);
-        graph.addEgde(21, 22, 1);
-        graph.addEgde(22, 23, 1);
-        graph.addEgde(23, 24, 1);
-        graph.addEgde(24, 16, 1);
-        graph.addEgde(24, 25, 1);
-        graph.addEgde(25, 26, 1);
-        graph.addEgde(26, 27, 1);
-        graph.addEgde(17, 27, 1);
-        graph.addEgde(29, 18, 1);;
-        graph.addEgde(30, 29, 1);
-        graph.addEgde(31, 30, 1);
-        graph.addEgde(32, 31, 1);
-        graph.addEgde(19, 32, 1);
-        graph.addEgde(21, 33, 1);
-        graph.addEgde(25, 34, 1);
-        graph.addEgde(27, 35, 1);
-        graph.addEgde(35, 36, 1);
-        graph.addEgde(36, 37, 1);
-        graph.addEgde(37, 38, 1);
-        graph.addEgde(38, 28, 1);
-        graph.addEgde(29, 39, 1);
-        graph.addEgde(39, 47, 1);
-        graph.addEgde(47, 48, 1);
-        graph.addEgde(48, 49, 1);
-        graph.addEgde(49, 50, 1);
-        graph.addEgde(32, 40, 1);
-        graph.addEgde(40, 50, 1);
-        graph.addEgde(50, 58, 1);
-        graph.addEgde(58, 68, 1);
-        graph.addEgde(68, 76, 1);
-        graph.addEgde(47, 57, 1);
-        graph.addEgde(57, 66, 1);
-        graph.addEgde(66, 67, 1);
-        graph.addEgde(67, 75, 1);
-        graph.addEgde(75, 84, 1);
-        graph.addEgde(84, 83, 1);
-        graph.addEgde(84, 85, 1);
-        graph.addEgde(85, 86, 1);
-        graph.addEgde(76, 86, 1);
-        graph.addEgde(33, 41, 1);
-        graph.addEgde(41, 42, 1);
-        graph.addEgde(42, 51, 1);
-        graph.addEgde(51, 60, 1);
-        graph.addEgde(60, 61, 1);
-        graph.addEgde(60, 59, 1);
-        graph.addEgde(61, 70, 1);
-        graph.addEgde(61, 62, 1);
-        graph.addEgde(34, 44, 1);
-
-        graph.addEgde(44, 43, 1);
-        graph.addEgde(43, 52, 1);
-        graph.addEgde(52, 62, 1);
-        graph.addEgde(62, 63, 1);
-        graph.addEgde(63, 71, 1);
-        graph.addEgde(35, 45, 1);
-        graph.addEgde(45, 53, 1);
-        graph.addEgde(53, 54, 1);
-        graph.addEgde(54, 55, 1);
-        graph.addEgde(55, 56, 1);
-        graph.addEgde(38, 46, 1);
-        graph.addEgde(46, 56, 1);
-        graph.addEgde(56, 65, 1);
-        graph.addEgde(65, 74, 1);
-
-        graph.addEgde(74, 73, 1);
-        graph.addEgde(73, 82, 1);
-        graph.addEgde(82, 91, 1);
-        graph.addEgde(91, 92, 1);
-        graph.addEgde(91, 90, 1);
-        graph.addEgde(53, 64, 1);
-        graph.addEgde(64, 72, 1);
-        graph.addEgde(72, 81, 1);
-        graph.addEgde(81, 89, 1);
-        graph.addEgde(90, 89, 1);
-        graph.addEgde(89, 99, 1);
-        graph.addEgde(71, 79, 1);
-        graph.addEgde(79, 80, 1);
-        graph.addEgde(80, 81, 1);
-        graph.addEgde(79, 88, 1);
-        graph.addEgde(88, 98, 1);
-        graph.addEgde(59, 69, 1);
-        graph.addEgde(69, 78, 1);
-        graph.addEgde(76, 77, 1);
-        graph.addEgde(77, 78, 1);
-        graph.addEgde(78, 87, 1);
-        graph.addEgde(87, 94, 1);
-        graph.addEgde(94, 95, 1);
-        graph.addEgde(95, 96, 1);
-        graph.addEgde(96, 97, 1);
-        graph.addEgde(97, 98, 1);
-        graph.addEgde(98, 104, 1);
-        graph.addEgde(104, 114, 1);
-        graph.addEgde(99, 105, 1);
-        graph.addEgde(105, 106, 1);
-        graph.addEgde(106, 107, 1);
-        graph.addEgde(107, 117, 1);
-        graph.addEgde(117, 125, 1);
-        graph.addEgde(125, 124, 1);
-        graph.addEgde(124, 130, 1);
-        graph.addEgde(124, 123, 1);
-        graph.addEgde(123, 116, 1);
-        graph.addEgde(105, 116, 1);
-        graph.addEgde(116, 115, 1);
-        graph.addEgde(115, 114, 1);
-        graph.addEgde(114, 113, 1);
-        graph.addEgde(113, 122, 1);
-        graph.addEgde(112, 129, 1);
-        graph.addEgde(129, 128, 1);
-        graph.addEgde(128, 127, 1);
-        graph.addEgde(127, 121, 1);
-        graph.addEgde(121, 112, 1);
-        graph.addEgde(112, 111, 1);
-        graph.addEgde(94, 103, 1);
-        graph.addEgde(103, 111, 1);
-        graph.addEgde(111, 110, 1);
-        graph.addEgde(86, 93, 1);
-        graph.addEgde(93, 102, 1);
-        graph.addEgde(102, 101, 1);
-        graph.addEgde(101, 100, 1);
-        graph.addEgde(100, 108, 1);
-        graph.addEgde(108, 118, 1);
-        graph.addEgde(118, 119, 1);
-        graph.addEgde(119, 126, 1);
-        graph.addEgde(119, 120, 1);
-        graph.addEgde(120, 109, 1);
-        graph.addEgde(102, 109, 1);
+        graph.addEgde(0, 1, 1);graph.addEgde(1, 2, 1);graph.addEgde(2, 3, 1);
+        graph.addEgde(3, 4, 1);graph.addEgde(3, 14, 1);graph.addEgde(4, 5, 1);
+        graph.addEgde(5, 6, 1);graph.addEgde(6, 15, 1);graph.addEgde(15, 22, 1);
+        graph.addEgde(16, 7, 1);graph.addEgde(7, 8, 1);graph.addEgde(8, 9, 1);
+        graph.addEgde(9, 10, 1);graph.addEgde(10, 17, 1);graph.addEgde(10, 11, 1);
+        graph.addEgde(11, 12, 1);graph.addEgde(12, 13, 1);graph.addEgde(14, 19, 1);
+        graph.addEgde(19, 20, 1);graph.addEgde(20, 21, 1);graph.addEgde(21, 22, 1);
+        graph.addEgde(22, 23, 1);graph.addEgde(23, 24, 1);graph.addEgde(24, 16, 1);
+        graph.addEgde(24, 25, 1);graph.addEgde(25, 26, 1);graph.addEgde(26, 27, 1);
+        graph.addEgde(17, 27, 1);graph.addEgde(29, 18, 1);graph.addEgde(30, 29, 1);
+        graph.addEgde(31, 30, 1);graph.addEgde(32, 31, 1);graph.addEgde(19, 32, 1);
+        graph.addEgde(21, 33, 1);graph.addEgde(25, 34, 1);graph.addEgde(27, 35, 1);
+        graph.addEgde(35, 36, 1);graph.addEgde(36, 37, 1);graph.addEgde(37, 38, 1);
+        graph.addEgde(38, 28, 1);graph.addEgde(29, 39, 1);graph.addEgde(39, 47, 1);
+        graph.addEgde(47, 48, 1);graph.addEgde(48, 49, 1);graph.addEgde(49, 50, 1);
+        graph.addEgde(32, 40, 1);graph.addEgde(40, 50, 1);graph.addEgde(50, 58, 1);
+        graph.addEgde(58, 68, 1);graph.addEgde(68, 76, 1);graph.addEgde(47, 57, 1);
+        graph.addEgde(57, 66, 1);graph.addEgde(66, 67, 1);graph.addEgde(67, 75, 1);
+        graph.addEgde(75, 84, 1);graph.addEgde(84, 83, 1);graph.addEgde(84, 85, 1);
+        graph.addEgde(85, 86, 1);graph.addEgde(76, 86, 1);graph.addEgde(33, 41, 1);
+        graph.addEgde(41, 42, 1);graph.addEgde(42, 51, 1);graph.addEgde(51, 60, 1);
+        graph.addEgde(60, 61, 1);graph.addEgde(60, 59, 1);graph.addEgde(61, 70, 1);
+        graph.addEgde(61, 62, 1);graph.addEgde(34, 44, 1);graph.addEgde(44, 43, 1);
+        graph.addEgde(43, 52, 1);graph.addEgde(52, 62, 1);graph.addEgde(62, 63, 1);
+        graph.addEgde(63, 71, 1);graph.addEgde(35, 45, 1);graph.addEgde(45, 53, 1);
+        graph.addEgde(53, 54, 1);graph.addEgde(54, 55, 1);graph.addEgde(55, 56, 1);
+        graph.addEgde(38, 46, 1);graph.addEgde(46, 56, 1);graph.addEgde(56, 65, 1);
+        graph.addEgde(65, 74, 1);graph.addEgde(74, 73, 1);graph.addEgde(73, 82, 1);
+        graph.addEgde(82, 91, 1);graph.addEgde(91, 92, 1);graph.addEgde(91, 90, 1);
+        graph.addEgde(53, 64, 1);graph.addEgde(64, 72, 1);graph.addEgde(72, 81, 1);
+        graph.addEgde(81, 89, 1);graph.addEgde(90, 89, 1);graph.addEgde(89, 99, 1);
+        graph.addEgde(71, 79, 1);graph.addEgde(79, 80, 1);graph.addEgde(80, 81, 1);
+        graph.addEgde(79, 88, 1);graph.addEgde(88, 98, 1);graph.addEgde(59, 69, 1);
+        graph.addEgde(69, 78, 1);graph.addEgde(76, 77, 1);graph.addEgde(77, 78, 1);
+        graph.addEgde(78, 87, 1);graph.addEgde(87, 94, 1);graph.addEgde(94, 95, 1);
+        graph.addEgde(95, 96, 1);graph.addEgde(96, 97, 1);graph.addEgde(97, 98, 1);
+        graph.addEgde(98, 104, 1);graph.addEgde(104, 114, 1);graph.addEgde(99, 105, 1);
+        graph.addEgde(105, 106, 1);graph.addEgde(106, 107, 1);graph.addEgde(107, 117, 1);
+        graph.addEgde(117, 125, 1);graph.addEgde(125, 124, 1);graph.addEgde(124, 130, 1);
+        graph.addEgde(124, 123, 1);graph.addEgde(123, 116, 1);graph.addEgde(105, 116, 1);
+        graph.addEgde(116, 115, 1);graph.addEgde(115, 114, 1);graph.addEgde(114, 113, 1);
+        graph.addEgde(113, 122, 1);graph.addEgde(112, 129, 1);graph.addEgde(129, 128, 1);
+        graph.addEgde(128, 127, 1);graph.addEgde(127, 121, 1);graph.addEgde(121, 112, 1);
+        graph.addEgde(112, 111, 1);graph.addEgde(94, 103, 1);graph.addEgde(103, 111, 1);
+        graph.addEgde(111, 110, 1);graph.addEgde(86, 93, 1);graph.addEgde(93, 102, 1);
+        graph.addEgde(102, 101, 1);graph.addEgde(101, 100, 1);graph.addEgde(100, 108, 1);
+        graph.addEgde(108, 118, 1);graph.addEgde(118, 119, 1);graph.addEgde(119, 126, 1);
+        graph.addEgde(119, 120, 1);graph.addEgde(120, 109, 1);graph.addEgde(102, 109, 1);
         graph.addEgde(110, 109, 1);
-
-
-
     }
-
-
-
 
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 15;
@@ -235,6 +155,8 @@ public class Board extends JPanel implements ActionListener {
             5, 9, 2, 12, 3, 6, 5, 13, 5, 3, 6, 9, 2, 12, 5,
             9, 14, 13,  11, 8, 12, 9, 10, 12, 9, 8, 14, 13, 11, 12
     };
+
+
 
 
     private final Node [][] allPaths ={
