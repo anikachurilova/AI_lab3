@@ -33,7 +33,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    private List<Pair> pathGlDFS = new ArrayList<>();
+    private List<Integer> pathGlDFS = new ArrayList<>();
     private List<Pair> pathGlBFS  = new ArrayList<>();
     private List<Integer> pathGlAStar  = new ArrayList<>();
     private Integer step = 0;
@@ -477,7 +477,7 @@ public class Board extends JPanel implements ActionListener {
             if(firstTimeDFS){
                 System.out.println("****************DFS****************");
                 DFSSearch dfs = new DFSSearch();
-                pathGlDFS= dfs.DFS(allPaths);
+                pathGlDFS= dfs.DFS(graph, 98);
                 System.out.println("Answer path: " + pathGlDFS);
                 dfs.showStatistics();
                 firstTimeDFS = false;
@@ -522,11 +522,11 @@ public class Board extends JPanel implements ActionListener {
 
             if (inGame) {
                 if (key == KeyEvent.VK_SPACE) {
-                    try {
-                        movePac(pathGlDFS);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
+//                    try {
+//                    //    movePac(pathGlDFS);
+//                    } catch (InterruptedException interruptedException) {
+//                        interruptedException.printStackTrace();
+//                    }
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
