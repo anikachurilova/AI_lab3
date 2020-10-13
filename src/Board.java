@@ -37,6 +37,17 @@ public class Board extends JPanel implements ActionListener {
     private List<Pair> pathGlBFS  = new ArrayList<>();
     private Integer step = 0;
     private static Graph graph;
+    private static Integer[]h;
+
+    static void initH(int currVertex){
+        int x = vertexCoord[currVertex].getFirst();
+        int y = vertexCoord[currVertex].getSecond();
+        for(int i = 0; i < 130; i++){
+            int xCurr = vertexCoord[i].getFirst();
+            int yCurr = vertexCoord[i].getSecond();
+            h[i] = Math.abs(xCurr - x)+Math.abs(yCurr-y);
+        }
+    }
     private static Pair[] vertexCoord = {
             new Pair(0,0), new Pair(1,0),new Pair(2,0), new Pair(3,0),new Pair(4,0), new Pair(5,0),
             new Pair(6,0), new Pair(8,0),new Pair(9,0), new Pair(10,0),new Pair(11,0), new Pair(12,0),
