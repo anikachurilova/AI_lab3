@@ -21,7 +21,7 @@ public class Pacman extends JFrame {
 
     public static void main(String[] args) {
 
-        EventQueue.invokeLater(() -> {
+     //   EventQueue.invokeLater(() -> {
 
             Pacman ex = null;
             try {
@@ -30,6 +30,6 @@ public class Pacman extends JFrame {
                 e.printStackTrace();
             }
             ex.setVisible(true);
-        });
+      //  });
     }
 }

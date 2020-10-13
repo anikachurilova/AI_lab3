@@ -198,6 +198,15 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    private void movePacCoord(Pair coord) throws InterruptedException {
+
+            pacman_x = 24*coord.getFirst();
+            pacman_y = 24*coord.getSecond();
+            step++;
+
+
+    }
+
     private void drawPacmanUp(Graphics2D g2d) {
 
         switch (pacmanAnimPos) {
