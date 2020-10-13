@@ -616,14 +616,14 @@ public class Board extends JPanel implements ActionListener {
         if (inGame) {
 
             drawPacman(g2d);
-            if(firstTimeDFS){
-                System.out.println("****************DFS****************");
-                DFSSearch dfs = new DFSSearch();
-                pathGlDFS= dfs.DFS(graph, 98);
-                System.out.println("Answer path: " + pathGlDFS);
-                dfs.showStatistics();
-                firstTimeDFS = false;
-            }
+//            if(firstTimeDFS){
+//                System.out.println("****************DFS****************");
+//                DFSSearch dfs = new DFSSearch();
+//                pathGlDFS= dfs.DFS(graph, 98);
+//                System.out.println("Answer path: " + pathGlDFS);
+//                dfs.showStatistics();
+//                firstTimeDFS = false;
+//            }
             if(firstTimeBFS){
                 System.out.println("****************BFS****************");
                 BFSSearch bfs = new BFSSearch();

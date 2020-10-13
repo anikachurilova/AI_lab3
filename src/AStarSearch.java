@@ -38,11 +38,14 @@ public class AStarSearch implements Search{
             }
             for (int i = 0; i < graph.adjacencylist[currVertex].size(); i++) {
                 int sonIndex = graph.adjacencylist[currVertex].get(i).destination;
-                sons.add(sonIndex);
-                int sonWeight= graph.adjacencylist[currVertex].get(i).destination;
-                weights.add(sonWeight);
-                int ff = graph.adjacencylist[currVertex].get(i).weight + totalWeight + h[sonIndex];
-                f.add(ff);
+                if(!path.contains(sonIndex)){
+                    sons.add(sonIndex);
+                    int sonWeight= graph.adjacencylist[currVertex].get(i).destination;
+                    weights.add(sonWeight);
+                    int ff = graph.adjacencylist[currVertex].get(i).weight + totalWeight + h[sonIndex];
+                    f.add(ff);
+                }
+
             }
             nextVertex = sons.get(f.indexOf(Collections.min(f)));
             totalWeight += weights.get(f.indexOf(Collections.min(f)));

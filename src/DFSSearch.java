@@ -26,7 +26,7 @@ public class DFSSearch implements Search {
 
         fringe.add(0);
         while (!fringe.isEmpty()){
-            System.out.println(path);
+        //    System.out.println(path);
             amountOfSteps++;
 //            Integer x = fringe.get(fringe.size()-1).getFirst();
 //            Integer y = fringe.get(fringe.size()-1).getSecond();
