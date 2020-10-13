@@ -35,17 +35,23 @@ public class Board extends JPanel implements ActionListener {
 
     private List<Pair> pathGlDFS = new ArrayList<>();
     private List<Pair> pathGlBFS  = new ArrayList<>();
+    private List<Integer> pathGlAStar  = new ArrayList<>();
     private Integer step = 0;
     private static Graph graph;
-    private static Integer[]h;
+    private static Integer[]h = new Integer[131];
 
-    static void initH(int currVertex){
-        int x = vertexCoord[currVertex].getFirst();
-        int y = vertexCoord[currVertex].getSecond();
-        for(int i = 0; i < 130; i++){
+    public static void initAll(){
+        initGraph();
+        initH(54);
+    }
+
+    static void initH(int pointVertex){
+        int x = vertexCoord[pointVertex].getFirst();
+        int y = vertexCoord[pointVertex].getSecond();
+        for(int i = 0; i < 131; i++){
             int xCurr = vertexCoord[i].getFirst();
             int yCurr = vertexCoord[i].getSecond();
-            h[i] = Math.abs(xCurr - x)+Math.abs(yCurr-y);
+            h[i] = Math.abs(xCurr - x) + Math.abs(yCurr-y);
         }
     }
     private static Pair[] vertexCoord = {
@@ -141,6 +147,8 @@ public class Board extends JPanel implements ActionListener {
     private int[] dx, dy;
     boolean firstTimeDFS =true;
     boolean firstTimeBFS = true;
+    boolean firstTimeAStar = true;
+
 
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
@@ -208,6 +216,8 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
 
         setBackground(Color.black);
+
+        initAll();
 
     }
 
@@ -479,6 +489,19 @@ public class Board extends JPanel implements ActionListener {
                 System.out.println("Answer path: " + pathGlBFS);
                 bfs.showStatistics();
                 firstTimeBFS = false;
+            }
+            if(firstTimeAStar){
+                System.out.println("****************AStar****************");
+                System.out.println(h[54]);
+                System.out.println(vertexCoord[54]);
+                System.out.println(h[20]);
+                System.out.println(h[32]);
+
+                AStarSearch aStar = new AStarSearch();
+                pathGlAStar = aStar.AStar(graph, h);
+                System.out.println("Answer path: " + pathGlAStar);
+                aStar.showStatistics();
+                firstTimeAStar = false;
             }
 
         } else {

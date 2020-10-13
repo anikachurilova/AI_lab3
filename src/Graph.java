@@ -20,7 +20,6 @@ public class Graph {
     }
 
 
-
     public void printGraph() {
         for (int i = 0; i < vertices; i++) {
             LinkedList<Edge> list = adjacencylist[i];
