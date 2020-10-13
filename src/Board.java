@@ -37,6 +37,19 @@ public class Board extends JPanel implements ActionListener {
     private List<Pair> pathGlBFS  = new ArrayList<>();
     private Integer step = 0;
 
+    static void initGraph(){
+        Graph graph = new Graph(6);
+        graph.addEgde(0, 1, 4);
+        graph.addEgde(0, 2, 3);
+        graph.addEgde(1, 3, 2);
+        graph.addEgde(1, 2, 5);
+        graph.addEgde(2, 3, 7);
+        graph.addEgde(3, 4, 2);
+        graph.addEgde(4, 0, 4);
+        graph.addEgde(4, 1, 4);
+        graph.addEgde(4, 5, 6);
+    }
+
 
 
 
