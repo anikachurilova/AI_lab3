@@ -19,10 +19,10 @@ public class AStarSearch implements Search{
         System.out.println("Amount of steps: " + getAmountOfSteps());
     }
 
-    public List<Integer> AStar(Graph graph, Integer[] h){
+    public List<Integer> AStar(Graph graph, Double[] h){
 
         List<Integer> path = new ArrayList<>();
-        List<Integer> f = new ArrayList<>();
+        List<Double> f = new ArrayList<>();
         List<Integer> sons = new ArrayList<>();
         List<Integer> weights = new ArrayList<>();
 
@@ -30,11 +30,12 @@ public class AStarSearch implements Search{
         int nextVertex = 0;
         int currVertex = 0;
         boolean isPoint = false;
-        path.add(currVertex);
+        Double zero = 0.0;
         while(!isPoint) {
-            System.out.println(path);
-            if(h[currVertex] == 0){
+            path.add(currVertex);
+            if(h[currVertex].equals(-1.0)){
                 isPoint = true;
+                return path;
             }
             for (int i = 0; i < graph.adjacencylist[currVertex].size(); i++) {
                 int sonIndex = graph.adjacencylist[currVertex].get(i).destination;
@@ -42,17 +43,18 @@ public class AStarSearch implements Search{
                     sons.add(sonIndex);
                     int sonWeight= graph.adjacencylist[currVertex].get(i).destination;
                     weights.add(sonWeight);
-                    int ff = graph.adjacencylist[currVertex].get(i).weight + totalWeight + h[sonIndex];
+                    double ff = graph.adjacencylist[currVertex].get(i).weight + totalWeight + h[sonIndex];
                     f.add(ff);
                 }
 
             }
             nextVertex = sons.get(f.indexOf(Collections.min(f)));
             totalWeight += weights.get(f.indexOf(Collections.min(f)));
-            path.add(nextVertex);
+
             f.clear();
             sons.clear();
             currVertex = nextVertex;
+            amountOfSteps++;
         }
         return path;
     }

@@ -38,20 +38,25 @@ public class Board extends JPanel implements ActionListener {
     private List<Integer> pathGlAStar  = new ArrayList<>();
     private Integer step = 0;
     private static Graph graph;
-    private static Integer[]h = new Integer[131];
+    private static Double[]h = new Double[131];
 
     public static void initAll(){
         initGraph();
-        initH(54);
+        initH(130);
     }
 
     static void initH(int pointVertex){
         int x = vertexCoord[pointVertex].getFirst();
         int y = vertexCoord[pointVertex].getSecond();
         for(int i = 0; i < 131; i++){
-            int xCurr = vertexCoord[i].getFirst();
-            int yCurr = vertexCoord[i].getSecond();
-            h[i] = Math.abs(xCurr - x) + Math.abs(yCurr-y);
+            if(i == pointVertex){
+                h[i] = -1.0;
+            }else{
+                int xCurr = vertexCoord[i].getFirst();
+                int yCurr = vertexCoord[i].getSecond();
+                h[i] =  (double)Math.abs((xCurr - x)) + (double)Math.abs((yCurr - y)) + (double)Math.max((double)Math.abs((xCurr - x)), (double)Math.abs((yCurr - y)));
+            }
+
         }
     }
     private static Pair[] vertexCoord = {
@@ -59,9 +64,9 @@ public class Board extends JPanel implements ActionListener {
             new Pair(6,0), new Pair(8,0),new Pair(9,0), new Pair(10,0),new Pair(11,0), new Pair(12,0),
             new Pair(13,0), new Pair(14,0),new Pair(3,1), new Pair(6,1),new Pair(8,1), new Pair(11,1),
             new Pair(0,2), new Pair(3,2),new Pair(4,2), new Pair(5,2),new Pair(6,2), new Pair(7,2),
-            new Pair(8,2), new Pair(9,2),new Pair(10,2), new Pair(11,2),new Pair(0,3), new Pair(1,3),
-            new Pair(2,3), new Pair(3,3),new Pair(5,3), new Pair(9,3),new Pair(11,3), new Pair(12,3),
-            new Pair(13,3), new Pair(14,3),new Pair(14,2), new Pair(0,4),new Pair(3,4), new Pair(5,4),
+            new Pair(8,2), new Pair(9,2),new Pair(10,2), new Pair(11,2),new Pair(14,3), new Pair(0,3),
+            new Pair(1,3), new Pair(2,3),new Pair(3,3), new Pair(5,3),new Pair(9,3), new Pair(11,3),
+            new Pair(12,3), new Pair(13,3),new Pair(14,3), new Pair(0,4),new Pair(3,4), new Pair(5,4),
             new Pair(6,4), new Pair(8,4),new Pair(9,4), new Pair(11,4),new Pair(14,4), new Pair(0,5),
             new Pair(1,5), new Pair(2,5),new Pair(3,5), new Pair(6,5),new Pair(8,5), new Pair(11,5),
             new Pair(12,5), new Pair(13,5),new Pair(14,5), new Pair(0,6),new Pair(3,6), new Pair(5,6),
@@ -616,14 +621,14 @@ public class Board extends JPanel implements ActionListener {
         if (inGame) {
 
             drawPacman(g2d);
-//            if(firstTimeDFS){
-//                System.out.println("****************DFS****************");
-//                DFSSearch dfs = new DFSSearch();
-//                pathGlDFS= dfs.DFS(graph, 98);
-//                System.out.println("Answer path: " + pathGlDFS);
-//                dfs.showStatistics();
-//                firstTimeDFS = false;
-//            }
+            if(firstTimeDFS){
+                System.out.println("****************DFS****************");
+                DFSSearch dfs = new DFSSearch();
+                pathGlDFS= dfs.DFS(graph, 98);
+                System.out.println("Answer path: " + pathGlDFS);
+                dfs.showStatistics();
+                firstTimeDFS = false;
+            }
             if(firstTimeBFS){
                 System.out.println("****************BFS****************");
                 BFSSearch bfs = new BFSSearch();
@@ -634,11 +639,6 @@ public class Board extends JPanel implements ActionListener {
             }
             if(firstTimeAStar){
                 System.out.println("****************AStar****************");
-                System.out.println(h[54]);
-                System.out.println(vertexCoord[54]);
-                System.out.println(h[20]);
-                System.out.println(h[32]);
-
                 AStarSearch aStar = new AStarSearch();
                 pathGlAStar = aStar.AStar(graph, h);
                 System.out.println("Answer path: " + pathGlAStar);
