@@ -34,7 +34,8 @@ public class Board extends JPanel implements ActionListener {
     private boolean dying = false;
 
     private List<Integer> pathGlDFS = new ArrayList<>();
-    private List<Pair> pathGlBFS  = new ArrayList<>();
+    private List<Integer> pathGlDijkstra = new ArrayList<>();
+    private List<Integer> pathGlBFS  = new ArrayList<>();
     private List<Integer> pathGlAStar  = new ArrayList<>();
     private Integer step = 0;
     private static Graph graph;
@@ -45,26 +46,38 @@ public class Board extends JPanel implements ActionListener {
         initH(130);
     }
 
-    static void initH(int pointVertex){
+    static void initH(int pointVertex) {
         int x = vertexCoord[pointVertex].getFirst();
         int y = vertexCoord[pointVertex].getSecond();
-        for(int i = 0; i < 131; i++){
-            if(i == pointVertex){
+        for (int i = 0; i < 131; i++) {
+            if (i == pointVertex) {
                 h[i] = -1.0;
-            }else{
+            } else {
                 int xCurr = vertexCoord[i].getFirst();
                 int yCurr = vertexCoord[i].getSecond();
-                h[i] =  (double)Math.abs((xCurr - x)) + (double)Math.abs((yCurr - y)) + (double)Math.max((double)Math.abs((xCurr - x)), (double)Math.abs((yCurr - y)));
+                h[i] = (double) Math.abs((xCurr - x)) + (double) Math.abs((yCurr - y)) + (double) Math.max((double) Math.abs((xCurr - x)), (double) Math.abs((yCurr - y)));
             }
 
         }
+    }
+
+    public List<Pair> convertToVertex(List<Integer> res){
+        List<Pair> allPairs = new ArrayList<>();
+        for(int i=0; i<vertexCoord.length;i++){
+            allPairs.add(vertexCoord[i]);
+        }
+        List<Pair> resPair= new ArrayList<>();
+        for(int i=0; i<res.size();i++){
+            resPair.add(allPairs.get(res.get(i)));
+        }
+        return resPair;
     }
     private static Pair[] vertexCoord = {
             new Pair(0,0), new Pair(1,0),new Pair(2,0), new Pair(3,0),new Pair(4,0), new Pair(5,0),
             new Pair(6,0), new Pair(8,0),new Pair(9,0), new Pair(10,0),new Pair(11,0), new Pair(12,0),
             new Pair(13,0), new Pair(14,0),new Pair(3,1), new Pair(6,1),new Pair(8,1), new Pair(11,1),
             new Pair(0,2), new Pair(3,2),new Pair(4,2), new Pair(5,2),new Pair(6,2), new Pair(7,2),
-            new Pair(8,2), new Pair(9,2),new Pair(10,2), new Pair(11,2),new Pair(14,3), new Pair(0,3),
+            new Pair(8,2), new Pair(9,2),new Pair(10,2), new Pair(11,2),new Pair(14,2), new Pair(0,3),
             new Pair(1,3), new Pair(2,3),new Pair(3,3), new Pair(5,3),new Pair(9,3), new Pair(11,3),
             new Pair(12,3), new Pair(13,3),new Pair(14,3), new Pair(0,4),new Pair(3,4), new Pair(5,4),
             new Pair(6,4), new Pair(8,4),new Pair(9,4), new Pair(11,4),new Pair(14,4), new Pair(0,5),
@@ -83,6 +96,8 @@ public class Board extends JPanel implements ActionListener {
             new Pair(3,13),new Pair(6,13), new Pair(8,13),new Pair(11,13),new Pair(12,13), new Pair(13,13),
             new Pair(2,14),new Pair(6,14), new Pair(7,14),new Pair(8,14),new Pair(12,14)
     };
+
+
 
     static void initGraph(){
         graph = new Graph(131);
@@ -293,6 +308,7 @@ public class Board extends JPanel implements ActionListener {
     private int pacsLeft, score;
     private int[] dx, dy;
     boolean firstTimeDFS =true;
+    boolean firstTimeDijkstra =true;
     boolean firstTimeBFS = true;
     boolean firstTimeAStar = true;
 
@@ -621,6 +637,7 @@ public class Board extends JPanel implements ActionListener {
         if (inGame) {
 
             drawPacman(g2d);
+
             if(firstTimeDFS){
                 System.out.println("****************DFS****************");
                 DFSSearch dfs = new DFSSearch();
@@ -629,14 +646,17 @@ public class Board extends JPanel implements ActionListener {
                 dfs.showStatistics();
                 firstTimeDFS = false;
             }
+
             if(firstTimeBFS){
                 System.out.println("****************BFS****************");
                 BFSSearch bfs = new BFSSearch();
-                pathGlBFS= bfs.BFS(allPaths);
-                System.out.println("Answer path: " + pathGlBFS);
+                pathGlBFS= bfs.BFS(graph, 98);
+                System.out.println("Answer path: " + pathGlDFS);
                 bfs.showStatistics();
                 firstTimeBFS = false;
             }
+
+
             if(firstTimeAStar){
                 System.out.println("****************AStar****************");
                 AStarSearch aStar = new AStarSearch();
@@ -645,6 +665,17 @@ public class Board extends JPanel implements ActionListener {
                 aStar.showStatistics();
                 firstTimeAStar = false;
             }
+
+            if(firstTimeDijkstra){
+                System.out.println("***********Dijkstra***********");
+                GreedyAlgo greedy = new GreedyAlgo(graph);
+                Map<Integer,Integer> res = greedy.execute(0);
+                pathGlDijkstra = greedy.getPath(98);
+                System.out.println("Answer path: " + pathGlDijkstra);
+                greedy.showStatistics();
+                firstTimeDijkstra = false;
+            }
+
 
         } else {
             showIntroScreen(g2d);
@@ -664,11 +695,21 @@ public class Board extends JPanel implements ActionListener {
 
             if (inGame) {
                 if (key == KeyEvent.VK_SPACE) {
-//                    try {
-//                    //    movePac(pathGlDFS);
-//                    } catch (InterruptedException interruptedException) {
-//                        interruptedException.printStackTrace();
-//                    }
+                    int input = Pacman.inputNum;
+                   try {
+                       if(input == 1){
+                           movePac(convertToVertex(pathGlDFS));
+                       }else if(input == 2 ){
+                           movePac(convertToVertex(pathGlBFS));
+                       }else if(input == 3){
+                           movePac(convertToVertex(pathGlAStar));
+                       }else{
+                           movePac(convertToVertex(pathGlDijkstra));
+                       }
+
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
