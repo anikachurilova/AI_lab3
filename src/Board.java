@@ -43,7 +43,7 @@ public class Board extends JPanel implements ActionListener {
 
     public static void initAll(){
         initGraph();
-        initH(130);
+        initH(96);
     }
 
     static void initH(int pointVertex) {
@@ -641,8 +641,8 @@ public class Board extends JPanel implements ActionListener {
             if(firstTimeDFS){
                 System.out.println("****************DFS****************");
                 DFSSearch dfs = new DFSSearch();
-                pathGlDFS= dfs.DFS(graph, 98);
-                System.out.println("Answer path: " + pathGlDFS);
+                pathGlDFS= dfs.DFS(graph, 96);
+                System.out.println("Answer path: " + convertToVertex(pathGlDFS));
                 dfs.showStatistics();
                 firstTimeDFS = false;
             }
@@ -650,8 +650,8 @@ public class Board extends JPanel implements ActionListener {
             if(firstTimeBFS){
                 System.out.println("****************BFS****************");
                 BFSSearch bfs = new BFSSearch();
-                pathGlBFS= bfs.BFS(graph, 98);
-                System.out.println("Answer path: " + pathGlDFS);
+                pathGlBFS= bfs.BFS(graph, 96);
+                System.out.println("Answer path: " + convertToVertex(pathGlBFS));
                 bfs.showStatistics();
                 firstTimeBFS = false;
             }
@@ -661,7 +661,7 @@ public class Board extends JPanel implements ActionListener {
                 System.out.println("****************AStar****************");
                 AStarSearch aStar = new AStarSearch();
                 pathGlAStar = aStar.AStar(graph, h);
-                System.out.println("Answer path: " + pathGlAStar);
+                System.out.println("Answer path: " + convertToVertex(pathGlAStar));
                 aStar.showStatistics();
                 firstTimeAStar = false;
             }
@@ -670,8 +670,8 @@ public class Board extends JPanel implements ActionListener {
                 System.out.println("***********Dijkstra***********");
                 GreedyAlgo greedy = new GreedyAlgo(graph);
                 Map<Integer,Integer> res = greedy.execute(0);
-                pathGlDijkstra = greedy.getPath(98);
-                System.out.println("Answer path: " + pathGlDijkstra);
+                pathGlDijkstra = greedy.getPath(96);
+                System.out.println("Answer path: " + convertToVertex(pathGlDijkstra));
                 greedy.showStatistics();
                 firstTimeDijkstra = false;
             }
