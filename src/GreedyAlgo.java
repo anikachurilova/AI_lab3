@@ -41,6 +41,7 @@ public class GreedyAlgo implements Search {
         }
         return distance;
     }
+
     public List<Integer> getNeighbors(Integer node) {
         List<Integer> res = new ArrayList<>();
         for (int i = 0; i < edges.length; i++) {
@@ -52,18 +53,17 @@ public class GreedyAlgo implements Search {
         }
         return res;
     }
+
     private void findMinimalDistances(Integer node) {
         List<Integer> adjacentNodes = getNeighbors(node);
         for (Integer target : adjacentNodes) {
             if (getShortestDistance(target) > getShortestDistance(node)
                     + getDistance(node, target)) {
-                distance.put(target, getShortestDistance(node)
-                        + getDistance(node, target));
+                distance.put(target, getShortestDistance(node) + getDistance(node, target));
                 predecessors.put(target, node);
                 unSettledNodes.add(target);
             }
         }
-
     }
 
     private int getDistance(Integer node, Integer target) {
@@ -104,6 +104,7 @@ public class GreedyAlgo implements Search {
             return d;
         }
     }
+
     public LinkedList<Integer> getPath(Integer target) {
         LinkedList<Integer> path = new LinkedList<Integer>();
         Integer step = target;

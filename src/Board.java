@@ -331,15 +331,12 @@ public class Board extends JPanel implements ActionListener {
             9, 6, 5, 5, 13, 5, 7, 13, 7, 5, 13, 5, 5, 3, 12,
             15, 5, 13, 1, 10, 4, 1, 2, 4, 1, 10, 4, 13, 5, 15,
             10, 8, 10, 4, 7, 5, 9, 8, 12, 5, 7, 1, 10, 8, 14,
-            3, 10, 14, 5, 5, 1, 10, 10, 10, 4, 5, 5, 11, 10, 6,
+            3, 10, 14, 5, 5, 1, 10, 26, 10, 4, 5, 5, 11, 10, 6,
             5, 3, 10, 4, 13, 5, 11, 2, 14, 5, 13, 1, 10, 6, 5,
             5, 5, 15, 1, 10, 8, 6, 5, 3, 8, 10, 4, 15, 5, 5,
             5, 9, 2, 12, 3, 6, 5, 13, 5, 3, 6, 9, 2, 12, 5,
             9, 14, 13,  11, 8, 12, 9, 10, 12, 9, 8, 14, 13, 11, 12
     };
-
-
-
 
     private final Node [][] allPaths ={
             {new Node(false,new Pair(0,1),new Pair(1,0)), new Node(false, new Pair(0,0),new Pair(0,2)),new Node(false, new Pair(0,1),new Pair(0,3)),new Node(false, new Pair(0,2),new Pair(0,4)), new Node(false, new Pair(0,3),new Pair(0,5), new Pair(1,4)), new Node(false, new Pair(0,4),new Pair(0,6), new Pair(1,5)), new Node(false, new Pair(0,5),new Pair(0,7), new Pair(1,6)), new Node(false, new Pair(0,6),new Pair(0,8), new Pair(1,7)), new Node(false, new Pair(0,7),new Pair(0,9), new Pair(1,8)), new Node(false, new Pair(0,8),new Pair(0,10), new Pair(1,9)), new Node(false, new Pair(0,9),new Pair(0,11), new Pair(1,10)), new Node(false, new Pair(0,10),new Pair(0,12), new Pair(1,11)), new Node(false, new Pair(0,11),new Pair(0,13), new Pair(1,12)),new Node(false, new Pair(0,13),new Pair(0,14), new Pair(1,13)), new Node(false, new Pair(0,13),new Pair(1,14))},
@@ -650,7 +647,7 @@ public class Board extends JPanel implements ActionListener {
             if(firstTimeBFS){
                 System.out.println("****************BFS****************");
                 BFSSearch bfs = new BFSSearch();
-                pathGlBFS= bfs.BFS(graph, 96);
+                pathGlBFS= bfs.BFS(graph,96);
                 System.out.println("Answer path: " + convertToVertex(pathGlBFS));
                 bfs.showStatistics();
                 firstTimeBFS = false;

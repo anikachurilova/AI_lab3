@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class BFSSearch implements Search {
     public void showStatistics() {
         System.out.println("Amount of steps: " + getAmountOfSteps());
     }
+
 
     public List<Integer> BFS(Graph graph, Integer goal) throws InterruptedException {
         LinkedList<Integer> queue = new LinkedList<Integer>();
